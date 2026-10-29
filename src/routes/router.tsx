@@ -14,7 +14,7 @@ import { presentationTemplateRoutes } from '@/routes/modules/presentation-templa
 const homeRoute: RouteObject = {
     path: ROUTE_PATHS.home,
     lazy: async () => {
-        const { HomePage } = await import('@/pages/home/ui/home-page');
+        const { HomePage } = await import('@/pages/home/home-page');
 
         return { Component: HomePage };
     },
