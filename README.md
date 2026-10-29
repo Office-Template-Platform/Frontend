@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="src/assets/office-template-platform-banner.png" alt="Office Template Platform — Document and Presentation Template Management" width="1200" height="675" />
+  <img src="src/assets/images/office-template-platform-banner.png" alt="Office Template Platform — Document and Presentation Template Management" width="1200" height="675" />
 
   <h1>Office Template Web</h1>
 
