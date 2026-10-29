@@ -1,0 +1,10 @@
+/* Đặt bề mặt kính ở layer component để utility Tailwind ghi đè được khi cần. */
+@layer components {
+    .glass-panel {
+        border: 1px solid var(--glass-edge);
+        background: var(--glass-surface);
+        -webkit-backdrop-filter: var(--glass-filter);
+        backdrop-filter: var(--glass-filter);
+        box-shadow: var(--glass-shadow);
+    }
+}

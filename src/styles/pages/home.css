@@ -1,0 +1,255 @@
+/* Chỉ giữ CSS cho minh họa nhiều lớp và trạng thái hover riêng của trang chủ. */
+.welcome-art-glow {
+    position: absolute;
+    inset: 15px 20px 0;
+    z-index: -1;
+    border-radius: 50%;
+    background: radial-gradient(
+        ellipse,
+        rgb(170 211 255 / 56%),
+        rgb(210 231 255 / 18%) 52%,
+        transparent 75%
+    );
+    filter: blur(8px);
+}
+.art-sheet {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    width: 152px;
+    height: 186px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgb(255 255 255 / 92%);
+    border-radius: 20px;
+    background: linear-gradient(155deg, #fff, #f5f9ff 88%);
+    box-shadow:
+        0 20px 42px rgb(65 121 188 / 16%),
+        inset 0 1px 0 white;
+}
+.art-sheet-back {
+    top: 23px;
+    left: calc(50% + 28px);
+    width: 137px;
+    height: 168px;
+    transform: rotate(8deg);
+    background: linear-gradient(155deg, #e7f2ff, #fff 82%);
+    box-shadow: 0 14px 32px rgb(65 121 188 / 10%);
+}
+.art-sheet-front {
+    transform: translateX(-50%) rotate(-4deg);
+}
+.art-sheet-heading {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--blue);
+}
+.art-format-label {
+    padding: 5px 7px;
+    border-radius: 7px;
+    color: #3f78bd;
+    background: #e7f2ff;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+}
+.art-sheet-title-line,
+.art-sheet-line,
+.art-sheet-bar {
+    height: 6px;
+    margin-bottom: 8px;
+    display: block;
+    border-radius: 999px;
+    background: #d5e4f7;
+}
+.art-sheet-title-line {
+    width: 78%;
+    height: 9px;
+    margin-bottom: 13px;
+    background: #9dbde3;
+}
+.art-sheet-line-wide {
+    width: 100%;
+}
+.art-sheet-line-medium {
+    width: 68%;
+}
+.art-sheet-block {
+    height: 34px;
+    margin-top: 6px;
+    display: block;
+    border-radius: 9px;
+    background: linear-gradient(135deg, #e4f0ff, #d1e6ff);
+}
+.art-sheet-bar-short {
+    width: 40%;
+    height: 8px;
+    margin-bottom: 16px;
+    background: #a7c8f0;
+}
+.art-format-chip {
+    position: absolute;
+    min-height: 39px;
+    padding-inline: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    border: 1px solid rgb(255 255 255 / 92%);
+    border-radius: 13px;
+    color: #45668f;
+    background: rgb(255 255 255 / 78%);
+    box-shadow:
+        0 10px 24px rgb(43 95 158 / 12%),
+        inset 0 1px 0 white;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+.art-format-chip-doc {
+    top: 34px;
+    left: 7%;
+    color: #236bd0;
+}
+.art-format-chip-slide {
+    right: 4%;
+    bottom: 18px;
+    color: #2775b7;
+}
+.template-art {
+    position: relative;
+    min-height: 155px;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    border: 1px solid rgb(255 255 255 / 75%);
+    border-radius: 18px;
+}
+.document-template-art {
+    background:
+        radial-gradient(
+            circle at 76% 24%,
+            rgb(255 255 255 / 85%),
+            transparent 31%
+        ),
+        linear-gradient(135deg, #e5f1ff, #d8eaff 55%, #eaf5ff);
+}
+.template-art-orb {
+    position: absolute;
+    right: 12%;
+    bottom: -54px;
+    width: 150px;
+    height: 150px;
+    border: 1px solid rgb(255 255 255 / 32%);
+    border-radius: 50%;
+    background: rgb(255 255 255 / 15%);
+}
+.template-paper {
+    position: relative;
+    z-index: 1;
+    width: 112px;
+    height: 132px;
+    padding: 17px 14px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgb(255 255 255 / 95%);
+    border-radius: 12px;
+    background: linear-gradient(155deg, #fff, #f6faff);
+    box-shadow:
+        0 15px 31px rgb(63 117 180 / 18%),
+        inset 0 1px 0 white;
+    transform: rotate(-4deg);
+}
+.template-paper-heading,
+.template-paper-line,
+.template-paper-section {
+    height: 5px;
+    margin-bottom: 7px;
+    display: block;
+    border-radius: 999px;
+    background: #d7e5f7;
+}
+.template-paper-heading {
+    width: 66%;
+    height: 7px;
+    margin-bottom: 12px;
+    background: #9dbbe0;
+}
+.template-paper-line-long {
+    width: 100%;
+}
+.template-paper-line-medium {
+    width: 63%;
+}
+.template-paper-section {
+    width: 78%;
+    height: 22px;
+    margin-top: 4px;
+    margin-bottom: 9px;
+    border-radius: 6px;
+    background: #e4f0ff;
+}
+.presentation-template-art {
+    background:
+        radial-gradient(
+            circle at 23% 75%,
+            rgb(255 255 255 / 85%),
+            transparent 27%
+        ),
+        linear-gradient(135deg, #e3f5ff, #d8edff 56%, #eaf6ff);
+}
+.slide-card {
+    position: absolute;
+    width: 139px;
+    height: 91px;
+    border: 1px solid rgb(255 255 255 / 90%);
+    border-radius: 12px;
+    background: linear-gradient(145deg, #fff, #eef6ff);
+    box-shadow: 0 13px 25px rgb(58 111 167 / 13%);
+}
+.slide-card-back {
+    transform: translate(22px, -9px) rotate(8deg);
+    background: linear-gradient(145deg, #edf7ff, #d8edff);
+}
+.slide-card-middle {
+    transform: translate(-13px, 8px) rotate(-7deg);
+    background: linear-gradient(145deg, #f5fbff, #e1f1ff);
+}
+.slide-card-front {
+    padding: 16px;
+    transform: rotate(2deg);
+}
+.slide-card-title,
+.slide-card-subtitle,
+.slide-card-graphic {
+    display: block;
+    border-radius: 999px;
+}
+.slide-card-title {
+    width: 53%;
+    height: 7px;
+    margin-bottom: 8px;
+    background: #8eafd6;
+}
+.slide-card-subtitle {
+    width: 77%;
+    height: 4px;
+    background: #d2e3f5;
+}
+.slide-card-graphic {
+    position: absolute;
+    right: 14px;
+    bottom: 14px;
+    width: 40px;
+    height: 25px;
+    border-radius: 7px;
+    background: linear-gradient(135deg, #9bcaff, #d8edff);
+}
+
+@media (max-width: 640px) {
+    .template-art {
+        min-height: 138px;
+    }
+}

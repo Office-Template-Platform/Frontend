@@ -1,0 +1,77 @@
+* {
+    box-sizing: border-box;
+}
+html {
+    min-height: 100%;
+    background: var(--canvas);
+    scrollbar-color: #9dbfe6 #eaf4ff;
+    scrollbar-width: thin;
+}
+html::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+html::-webkit-scrollbar-track {
+    border-radius: 999px;
+    background: rgb(226 239 253 / 72%);
+}
+html::-webkit-scrollbar-thumb {
+    border: 3px solid transparent;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #a8ccef, #80afe2) padding-box;
+}
+html::-webkit-scrollbar-thumb:hover {
+    border-width: 2px;
+    background: linear-gradient(180deg, #8eb9e8, #689bd1) padding-box;
+}
+body {
+    min-width: 320px;
+    min-height: 100vh;
+    margin: 0;
+    color: var(--ink);
+    background:
+        radial-gradient(
+            circle at 78% 6%,
+            rgb(179 217 255 / 35%),
+            transparent 34rem
+        ),
+        radial-gradient(
+            circle at 10% 82%,
+            rgb(200 226 255 / 32%),
+            transparent 32rem
+        ),
+        linear-gradient(135deg, #f7fbff, #edf5ff 48%, #f4f9ff);
+    font-family: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+#root {
+    min-height: 100vh;
+}
+#main-content {
+    scroll-margin-top: 112px;
+}
+@layer base {
+    * {
+        @apply border-border outline-ring/50;
+    }
+    body {
+        @apply bg-background text-foreground;
+    }
+    html {
+        @apply font-sans;
+    }
+    a {
+        color: inherit;
+        text-decoration: none;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+    }
+    a:focus-visible {
+        outline: 3px solid rgb(33 118 229 / 72%);
+        outline-offset: 4px;
+    }
+    button {
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+    }
+}

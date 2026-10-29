@@ -1,0 +1,12 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+@import '@fontsource-variable/geist';
+@import './theme.css';
+@import './base.css';
+@import '../layout/workspace.css';
+@import '../layout/navigation.css';
+@import '../pages/home.css';
+@import '../pages/catalog.css';
+@import '../pages/not-found.css';
+@import './accessibility.css';

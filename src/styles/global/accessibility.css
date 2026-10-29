@@ -1,0 +1,33 @@
+@media (prefers-reduced-transparency: reduce) {
+    .glass-panel {
+        border-color: #dbe7f5;
+        background: rgb(255 255 255 / 96%);
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+    }
+    .sidebar-note-surface {
+        background: #f8fafc;
+    }
+    .product-card::before {
+        display: none;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    * {
+        scroll-behavior: auto;
+        animation: none;
+    }
+    .sidebar-link,
+    .product-card,
+    .product-card::before {
+        transition: none;
+    }
+}
+@supports not (backdrop-filter: blur(1px)) {
+    .glass-panel {
+        background: rgb(255 255 255 / 94%);
+    }
+    .sidebar-note-surface {
+        background: #f8fafc;
+    }
+}

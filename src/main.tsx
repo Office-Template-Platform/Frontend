@@ -3,7 +3,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { AppProviders } from '@/providers/app-providers';
 import { AppRouter } from '@/routes/router';
-import '@/styles/globals.css';
+import '@/styles/global/globals.css';
 
 // Kiểm tra mount point trước khi khởi tạo để lỗi HTML shell được báo rõ ràng.
 function mountReactApplication() {
