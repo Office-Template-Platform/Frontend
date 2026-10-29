@@ -1,0 +1,47 @@
+import {
+    createBrowserRouter,
+    RouterProvider,
+    type RouteObject,
+} from 'react-router-dom';
+import { ProductSiteLayout } from '@/layouts/product-shell/ui/product-site-layout';
+import { ROUTE_PATHS } from '@/shared/config/route-paths';
+import { documentTemplateRoutes } from '@/routes/modules/document-template-routes';
+import { presentationTemplateRoutes } from '@/routes/modules/presentation-template-routes';
+
+// Các trang ít dùng được tách chunk để người dùng chỉ tải giao diện của route đã mở.
+const homeRoute: RouteObject = {
+    path: ROUTE_PATHS.home,
+    lazy: async () => {
+        const { HomePage } = await import('@/pages/home/ui/home-page');
+
+        return { Component: HomePage };
+    },
+};
+
+const notFoundRoute: RouteObject = {
+    path: '*',
+    lazy: async () => {
+        const { NotFoundPage } =
+            await import('@/pages/system/not-found/ui/not-found-page');
+
+        return { Component: NotFoundPage };
+    },
+};
+
+// Ghép shell chung với route theo domain, giữ từng sản phẩm độc lập khi danh sách route lớn dần.
+const router = createBrowserRouter([
+    {
+        Component: ProductSiteLayout,
+        children: [
+            homeRoute,
+            ...documentTemplateRoutes,
+            ...presentationTemplateRoutes,
+            notFoundRoute,
+        ],
+    },
+]);
+
+// Cung cấp router cho ứng dụng; URL và page ownership nằm trong registry phía trên.
+export function AppRouter() {
+    return <RouterProvider router={router} />;
+}

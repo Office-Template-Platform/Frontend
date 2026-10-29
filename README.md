@@ -77,6 +77,8 @@ web/
 │   └── images/
 │       └── office-template-logo.png
 ├── src/
+│   ├── assets/
+│   │   └── office-template-platform-banner.png
 │   ├── components/
 │   │   └── ui/                         # shadcn/ui primitives
 │   │       ├── button.tsx
@@ -114,6 +116,7 @@ web/
 - `routes` owns URL definitions and connects routes to layouts and pages. Route modules use lazy loading so each screen can be split into its own bundle.
 - `pages` groups screens by product domain and workflow. A large number of templates should be represented as data and dynamic route parameters, not one source file per record.
 - `layouts` contains shared application shells; `components/ui` contains reusable shadcn/ui primitives.
+- `src/assets` holds images imported by frontend code; `public` holds assets served from a stable URL, such as the site logo.
 - `store` is reserved for state shared across workflows. A feature should own its slice when that workflow is implemented; transient input state stays local to the relevant component or form.
 - Form schemas and form types belong to their owning feature. Use React Hook Form with the Zod resolver for form state and validation.
 - Import `toast` from `sonner` in a feature action and use the single global Toaster mounted by `AppProviders`.
