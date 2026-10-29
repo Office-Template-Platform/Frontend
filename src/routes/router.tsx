@@ -24,7 +24,7 @@ const notFoundRoute: RouteObject = {
     path: '*',
     lazy: async () => {
         const { NotFoundPage } =
-            await import('@/pages/system/not-found/ui/not-found-page');
+            await import('@/pages/system/not-found/not-found-page');
 
         return { Component: NotFoundPage };
     },
