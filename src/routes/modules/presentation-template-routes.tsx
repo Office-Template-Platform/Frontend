@@ -8,7 +8,7 @@ export const presentationTemplateRoutes: RouteObject[] = [
         path: ROUTE_PATHS.presentationTemplateCatalog,
         lazy: async () => {
             const { PresentationLibraryPage } =
-                await import('@/pages/presentation-template-library/catalog/ui/presentation-library-page');
+                await import('@/pages/presentation-template-library/catalog/presentation-library-page');
 
             return { Component: PresentationLibraryPage };
         },
