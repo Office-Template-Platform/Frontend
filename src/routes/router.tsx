@@ -1,9 +1,11 @@
+// Registry tách shell thư viện khỏi các route hệ thống cần bố cục độc lập.
 import {
     createBrowserRouter,
     RouterProvider,
     type RouteObject,
 } from 'react-router-dom';
-import { ProductSiteLayout } from '@/layouts/product-shell/ui/product-site-layout';
+import { EmptyLayout } from '@/layouts/empty-shell/empty-layout';
+import { ProductSiteLayout } from '@/layouts/product-shell/product-site-layout';
 import { ROUTE_PATHS } from '@/shared/config/route-paths';
 import { documentTemplateRoutes } from '@/routes/modules/document-template-routes';
 import { presentationTemplateRoutes } from '@/routes/modules/presentation-template-routes';
@@ -28,7 +30,7 @@ const notFoundRoute: RouteObject = {
     },
 };
 
-// Ghép shell chung với route theo domain, giữ từng sản phẩm độc lập khi danh sách route lớn dần.
+// Ghép mỗi nhóm route với đúng shell để lỗi 404 không kế thừa chrome của thư viện.
 const router = createBrowserRouter([
     {
         Component: ProductSiteLayout,
@@ -36,8 +38,11 @@ const router = createBrowserRouter([
             homeRoute,
             ...documentTemplateRoutes,
             ...presentationTemplateRoutes,
-            notFoundRoute,
         ],
+    },
+    {
+        Component: EmptyLayout,
+        children: [notFoundRoute],
     },
 ]);
 
