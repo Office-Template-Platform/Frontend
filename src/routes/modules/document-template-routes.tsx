@@ -8,7 +8,7 @@ export const documentTemplateRoutes: RouteObject[] = [
         path: ROUTE_PATHS.documentTemplateCatalog,
         lazy: async () => {
             const { DocumentLibraryPage } =
-                await import('@/pages/document-template-library/catalog/ui/document-library-page');
+                await import('@/pages/document-template-library/catalog/document-library-page');
 
             return { Component: DocumentLibraryPage };
         },
