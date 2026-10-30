@@ -25,7 +25,7 @@ Office Template Web is the React frontend for a platform with two separate templ
 - **Document templates** — `/document-templates`
 - **Presentation templates** — `/presentation-templates`
 
-The current application provides product navigation, shared page layouts, route-level code splitting, a not-found page, and reusable UI foundations. The library screens are presentation-ready shells; template data, search, filtering, preview, and API workflows remain to be implemented.
+The document catalog is connected to the NestJS API for server-side search, category filtering, pagination, preview, and independent DOCX creation. Users can download a copy, edit it in Word or another compatible application, then upload the edited file to save it. The presentation catalog reads the API metadata endpoint; the current backend returns no PPTX templates and has no create/download workflow yet.
 
 ## Getting started
 
@@ -43,6 +43,8 @@ npm run dev
 ```
 
 Vite serves the frontend at `http://localhost:3000`.
+
+The frontend expects the API at `http://localhost:3001/api`. Override `VITE_API_BASE_URL` in a local `.env.local` file when the backend uses another address. Start the API and PostgreSQL using the setup instructions in [`../api/README.md`](../api/README.md).
 
 ### Available commands
 
@@ -66,44 +68,69 @@ Vite serves the frontend at `http://localhost:3000`.
 | Notifications          | Sonner                                      | Application-wide toast notifications                     |
 | Code quality           | ESLint, Prettier                            | Linting and consistent formatting                        |
 
-The dependencies and base integrations for this stack are installed. The Redux store and global notification host are wired into the application. Form libraries are ready for feature forms; no placeholder form has been added while the product workflows are still being defined.
+RTK Query uses the shared Redux store for request state and cache. The create-document form uses React Hook Form with Zod validation, and Sonner reports API actions through the global Toaster.
 
 ## Application structure
 
 ```text
 web/
-├── .env.example                      # Planned VITE_API_BASE_URL
+├── .env.example                      # Default API base URL
 ├── public/
 │   └── images/
 │       └── office-template-logo.png
 ├── src/
 │   ├── assets/
-│   │   └── office-template-platform-banner.png
+│   │   ├── icons/microsoft-365/       # Word and PowerPoint SVG marks
+│   │   └── images/                    # Product banner
 │   ├── components/
-│   │   └── ui/                         # shadcn/ui primitives
+│   │   └── ui/                        # shadcn/ui primitives
 │   │       ├── button.tsx
+│   │       ├── dialog.tsx
+│   │       ├── input.tsx
+│   │       ├── skeleton.tsx
 │   │       └── sonner.tsx
 │   ├── layouts/
-│   │   └── product-shell/ui/           # Shared navigation and page shell
-│   ├── pages/                          # Route screens grouped by domain/workflow
-│   │   ├── document-template-library/catalog/ui/
-│   │   ├── home/ui/
-│   │   ├── presentation-template-library/catalog/ui/
-│   │   └── system/not-found/ui/
+│   │   ├── empty-shell/
+│   │   └── product-shell/             # Shared navigation and library shell
+│   ├── config/
+│   │   └── api.config.ts              # Single source for API base path and URL
+│   ├── pages/                         # Route screens grouped by domain/workflow
+│   │   ├── document-template-library/catalog/
+│   │   │   ├── components/
+│   │   │   │   ├── catalog/            # Heading, filters, pagination, loading and error
+│   │   │   │   ├── create-document/    # Create and update a user's DOCX copy
+│   │   │   │   ├── empty-state/        # Empty catalog state and illustration
+│   │   │   │   └── template/           # Template card and preview dialog
+│   │   │   ├── hooks/
+│   │   │   ├── schemas/
+│   │   │   └── types/                 # Page and form contracts
+│   │   ├── home/components/
+│   │   ├── presentation-template-library/catalog/
+│   │   └── system/not-found/
 │   ├── providers/
 │   │   ├── app-providers.tsx            # Redux Provider and global Toaster
 │   │   └── types/
 │   ├── routes/
 │   │   ├── modules/                     # Product route groups
 │   │   └── router.tsx                   # Router composition
+│   ├── services/                        # API modules grouped by business domain
+│   │   ├── document-template/
+│   │   │   ├── api/document-template.api.ts
+│   │   │   ├── types/document-template.types.ts
+│   │   │   └── index.ts                 # Stable public exports for pages
+│   │   └── presentation-template/
+│   │       ├── api/presentation-template.api.ts
+│   │       ├── types/presentation-template.types.ts
+│   │       └── index.ts
 │   ├── shared/
+│   │   ├── api/                         # RTK Query client and API envelope types
 │   │   ├── config/                      # Route paths and stable app config
 │   │   └── lib/                         # Shared technical utilities
 │   ├── store/
 │   │   ├── hooks.ts                     # Typed Redux hooks
 │   │   └── store.ts                     # Redux Toolkit store
 │   ├── styles/
-│   │   └── globals.css                  # Tailwind entry, theme tokens, global styles
+│   │   └── global/globals.css           # Tailwind entry and global imports
 │   └── main.tsx                         # React entry point
 ├── components.json                     # shadcn/ui configuration
 ├── package.json
@@ -115,25 +142,29 @@ web/
 
 - `routes` owns URL definitions and connects routes to layouts and pages. Route modules use lazy loading so each screen can be split into its own bundle.
 - `pages` groups screens by product domain and workflow. A large number of templates should be represented as data and dynamic route parameters, not one source file per record.
+- Page components are grouped by responsibility (`catalog`, `template`, `create-document`, and `empty-state`) so related UI can grow without making one flat folder difficult to navigate.
 - `layouts` contains shared application shells; `components/ui` contains reusable shadcn/ui primitives.
 - `src/assets` holds images imported by frontend code; `public` holds assets served from a stable URL, such as the site logo.
-- `store` is reserved for state shared across workflows. A feature should own its slice when that workflow is implemented; transient input state stays local to the relevant component or form.
+- `config/api.config.ts` is the single source for the backend base URL; `services/<domain>/api` owns endpoint definitions and `services/<domain>/types` owns API contracts.
+- RTK Query owns remote data cache in `shared/api`; transient search and dialog state stays local to the feature. Pages import API hooks and contracts through each service's `index.ts`.
 - Form schemas and form types belong to their owning feature. Use React Hook Form with the Zod resolver for form state and validation.
 - Import `toast` from `sonner` in a feature action and use the single global Toaster mounted by `AppProviders`.
-- `styles/globals.css` is the Tailwind CSS entry point and the home for global tokens. Feature-specific styles should stay close to the feature where practical.
+- `styles/global/globals.css` is the Tailwind CSS entry point. Feature layouts use Tailwind utilities and share only the established glass surface tokens.
 
 ## Routes
 
-| Path                      | Purpose                       | Current state                                          |
-| ------------------------- | ----------------------------- | ------------------------------------------------------ |
-| `/`                       | Choose a template library     | Home screen and product links are available            |
-| `/document-templates`     | Browse document templates     | Library page shell is available; data is not connected |
-| `/presentation-templates` | Browse presentation templates | Library page shell is available; data is not connected |
-| Any unmatched path        | Handle invalid routes         | Not-found page is available                            |
+| Path                      | Purpose                       | Current state                                                                             |
+| ------------------------- | ----------------------------- | ----------------------------------------------------------------------------------------- |
+| `/`                       | Choose a template library     | Home screen and product links are available                                               |
+| `/document-templates`     | Browse document templates     | API search, category filters, pagination, preview, create, download, and save edited DOCX |
+| `/presentation-templates` | Browse presentation templates | Connected to list endpoint; backend currently returns an empty collection                 |
+| Any unmatched path        | Handle invalid routes         | Not-found page is available                                                               |
 
 ## API integration
 
-The frontend is not yet connected to the backend. `.env.example` documents the planned `VITE_API_BASE_URL`; the current pages do not send API requests yet. When API workflows are added, keep request and response contracts in the owning feature's service boundary and keep network calls out of presentational components.
+`VITE_API_BASE_URL` defaults to `http://localhost:3001/api`. RTK Query unwraps the API's `{ success, data, meta }` envelope and keeps feature request definitions beside their catalog. Preview images and DOCX downloads use the API's binary endpoints directly.
+
+The DOCX API supports listing, categories, details, previews, creating a private copy, saving an edited DOCX, and downloading the result. The PPTX API currently exposes metadata listing only and returns an empty collection; search, template previews, creation, and download require backend endpoints and data before those workflows can be enabled.
 
 ## Adding shadcn/ui components
 
