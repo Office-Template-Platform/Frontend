@@ -17,6 +17,10 @@
         scroll-behavior: auto;
         animation: none;
     }
+    /* Giữ chỉ báo đang lưu/xử lý chuyển động chậm để dễ nhận ra trạng thái chờ. */
+    .active-progress-spinner {
+        animation: spin 1.2s linear infinite;
+    }
     .sidebar-link,
     .product-card,
     .product-card::before {

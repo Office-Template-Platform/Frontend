@@ -4,7 +4,11 @@ import { API_BASE_URL } from '@/config/api.config';
 
 export const apiClient = createApi({
     reducerPath: 'officeTemplateApi',
-    baseQuery: fetchBaseQuery({ baseUrl: API_BASE_URL }),
+    // API chạy khác cổng với Vite; include để gửi và nhận cookie HttpOnly của anonymous workspace.
+    baseQuery: fetchBaseQuery({
+        baseUrl: API_BASE_URL,
+        credentials: 'include',
+    }),
     tagTypes: [
         'DocumentTemplates',
         'DocumentTemplateCategories',

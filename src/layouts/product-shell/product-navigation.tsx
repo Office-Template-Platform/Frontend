@@ -1,5 +1,5 @@
 // Sidebar sở hữu điều hướng và nhãn định dạng; route active do React Router cung cấp.
-import { Layers, LayoutDashboard } from 'lucide-react';
+import { FolderOpen, Layers, LayoutDashboard } from 'lucide-react';
 import { Link, NavLink } from 'react-router-dom';
 import powerpointIcon from '@/assets/icons/microsoft-365/powerpoint.svg';
 import wordIcon from '@/assets/icons/microsoft-365/word.svg';
@@ -21,7 +21,7 @@ const sidebarLinkClassName = [
     'max-[820px]:min-h-15 max-[820px]:flex-col max-[820px]:justify-center max-[820px]:gap-1 max-[820px]:rounded-[16px] max-[820px]:px-1 max-[820px]:py-1.5 max-[820px]:text-[10px] max-[820px]:leading-[1.2]',
 ].join(' ');
 
-// Dẫn tới các thư viện bằng NavLink và tóm tắt định dạng tệp tương ứng ở cuối sidebar.
+// Dẫn tới tài liệu đã tạo và các thư viện mẫu; cuối sidebar tóm tắt định dạng có sẵn.
 export function ProductNavigation() {
     return (
         <aside className={productSidebarClassName}>
@@ -51,8 +51,8 @@ export function ProductNavigation() {
                 Thư viện
             </span>
             <nav
-                className="grid gap-1.25 max-[820px]:w-full max-[820px]:grid-cols-3"
-                aria-label="Điều hướng thư viện"
+                className="grid gap-1.25 max-[820px]:w-full max-[820px]:grid-cols-4"
+                aria-label="Điều hướng thư viện và tài liệu cá nhân"
             >
                 <NavLink
                     className={sidebarLinkClassName}
@@ -66,6 +66,18 @@ export function ProductNavigation() {
                         <LayoutDashboard size={19} strokeWidth={1.8} />
                     </span>
                     <span>Tổng quan</span>
+                </NavLink>
+                <NavLink
+                    className={sidebarLinkClassName}
+                    to={ROUTE_PATHS.userDocuments}
+                >
+                    <span
+                        className="sidebar-link-icon grid size-5.75 shrink-0 place-items-center text-[#7890b2]"
+                        aria-hidden="true"
+                    >
+                        <FolderOpen size={19} strokeWidth={1.8} />
+                    </span>
+                    <span>Tài liệu của tôi</span>
                 </NavLink>
                 <NavLink
                     className={sidebarLinkClassName}

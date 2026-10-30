@@ -8,8 +8,11 @@ import type {
     DocumentTemplateCategory,
     DocumentTemplateDetail,
     DocumentTemplateListQuery,
+    OnlyOfficeEditorConfigResponse,
+    PagedUserDocuments,
     PagedDocumentTemplates,
     SaveUserDocumentRequest,
+    UserDocumentListQuery,
     UserDocumentSummary,
 } from '../types/document-template.types';
 
@@ -77,11 +80,62 @@ export const documentTemplateApi = apiClient.injectEndpoints({
                 { type: 'DocumentTemplates', id },
             ],
         }),
+        // [GET] /api/user-documents
+        // Liệt kê tài liệu trong workspace hiện tại, với tìm kiếm tiêu đề và phân trang từ backend.
+        // Danh sách luôn được sắp theo lần cập nhật gần nhất nên page có thể nêu bật tài liệu đầu tiên.
+        listUserDocuments: build.query<
+            PagedUserDocuments,
+            UserDocumentListQuery
+        >({
+            query: (params) => ({
+                url: 'user-documents',
+                params,
+            }),
+            transformResponse: (
+                response: ApiSuccessResponse<PagedUserDocuments>,
+            ) => response.data,
+            // Tag từng tài liệu và LIST để thay đổi sau tạo/lưu làm mới đúng các trang liên quan.
+            providesTags: (result) =>
+                result
+                    ? [
+                          ...result.items.map(({ id }) => ({
+                              type: 'UserDocuments' as const,
+                              id,
+                          })),
+                          { type: 'UserDocuments', id: 'LIST' },
+                      ]
+                    : [{ type: 'UserDocuments', id: 'LIST' }],
+        }),
+        // [GET] /api/user-documents/:documentId
+        // Đọc metadata tài liệu để hiển thị tiêu đề và nhận biết callback đã lưu revision mới.
+        // Khi người dùng rời editor sau chỉnh sửa, page bật polling ngắn để chờ ONLYOFFICE callback.
+        getUserDocument: build.query<UserDocumentSummary, string>({
+            query: (documentId) =>
+                `user-documents/${encodeURIComponent(documentId)}`,
+            transformResponse: (
+                response: ApiSuccessResponse<UserDocumentSummary>,
+            ) => response.data,
+            providesTags: (_result, _error, documentId) => [
+                { type: 'UserDocuments', id: documentId },
+            ],
+        }),
+        // [GET] /api/user-documents/:documentId/editor-config
+        // Lấy cấu hình ký theo document revision; luôn refetch khi route editor mở để tránh JWT hết hạn.
+        getUserDocumentEditorConfig: build.query<
+            OnlyOfficeEditorConfigResponse,
+            string
+        >({
+            query: (documentId) =>
+                `user-documents/${encodeURIComponent(documentId)}/editor-config`,
+            transformResponse: (
+                response: ApiSuccessResponse<OnlyOfficeEditorConfigResponse>,
+            ) => response.data,
+            keepUnusedDataFor: 0,
+        }),
         // [POST] /api/document-templates/:templateId/documents
         // Yêu cầu backend tạo bản DOCX riêng của người dùng từ phiên bản mẫu hiện hành.
         // Body nhận `title` tùy chọn; nếu tên trống, API sẽ dùng tên của mẫu nguồn.
-        // Response data là metadata UserDocumentSummary; phát tag invalidation LIST tài liệu riêng.
-        // Endpoint danh sách tài liệu có thể dùng tag này để đồng bộ cache khi được tích hợp.
+        // Response data là metadata UserDocumentSummary; phát tag LIST để đồng bộ trang tài liệu riêng.
         createUserDocument: build.mutation<
             UserDocumentSummary,
             CreateUserDocumentRequest
@@ -123,9 +177,10 @@ export const documentTemplateApi = apiClient.injectEndpoints({
             transformResponse: (
                 response: ApiSuccessResponse<UserDocumentSummary>,
             ) => response.data,
-            // Chỉ làm mới cache của tài liệu vừa được cập nhật.
+            // Làm mới cả metadata chi tiết và danh sách để thời gian cập nhật được phản ánh ngay.
             invalidatesTags: (_result, _error, { documentId }) => [
                 { type: 'UserDocuments', id: documentId },
+                { type: 'UserDocuments', id: 'LIST' },
             ],
         }),
     }),
@@ -136,6 +191,9 @@ export const documentTemplateApi = apiClient.injectEndpoints({
 export const {
     useCreateUserDocumentMutation,
     useGetDocumentTemplateQuery,
+    useGetUserDocumentEditorConfigQuery,
+    useGetUserDocumentQuery,
+    useListUserDocumentsQuery,
     useListDocumentTemplateCategoriesQuery,
     useListDocumentTemplatesQuery,
     useSaveUserDocumentMutation,

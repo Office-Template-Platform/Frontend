@@ -22,6 +22,12 @@ const workspaceHeaderClassName = [
 export function ProductSiteLayout() {
     return (
         <div className={workspaceShellClassName}>
+            <a
+                href="#main-content"
+                className="sr-only z-50 rounded-md bg-white px-3 py-2 text-sm font-semibold text-slate-900 focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus-visible:ring-2 focus-visible:ring-blue-500"
+            >
+                Đến nội dung chính
+            </a>
             <ProductNavigation />
             <div className="flex min-w-0 flex-col">
                 <header className={workspaceHeaderClassName}>

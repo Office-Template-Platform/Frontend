@@ -7,7 +7,10 @@ import {
 import { EmptyLayout } from '@/layouts/empty-shell/empty-layout';
 import { ProductSiteLayout } from '@/layouts/product-shell/product-site-layout';
 import { ROUTE_PATHS } from '@/shared/config/route-paths';
-import { documentTemplateRoutes } from '@/routes/modules/document-template-routes';
+import {
+    documentEditorRoutes,
+    documentTemplateRoutes,
+} from '@/routes/modules/document-template-routes';
 import { presentationTemplateRoutes } from '@/routes/modules/presentation-template-routes';
 
 // Các trang ít dùng được tách chunk để người dùng chỉ tải giao diện của route đã mở.
@@ -30,7 +33,7 @@ const notFoundRoute: RouteObject = {
     },
 };
 
-// Ghép mỗi nhóm route với đúng shell để lỗi 404 không kế thừa chrome của thư viện.
+// Đặt editor và trang hệ thống ngoài shell catalog để editor chiếm trọn chiều cao cửa sổ.
 const router = createBrowserRouter([
     {
         Component: ProductSiteLayout,
@@ -42,7 +45,7 @@ const router = createBrowserRouter([
     },
     {
         Component: EmptyLayout,
-        children: [notFoundRoute],
+        children: [...documentEditorRoutes, notFoundRoute],
     },
 ]);
 

@@ -98,6 +98,30 @@ export type UserDocumentSummary = {
     };
 };
 
+// Query phân trang tài liệu riêng theo workspace; backend hỗ trợ tìm theo tiêu đề.
+export type UserDocumentListQuery = {
+    // Trang hiện tại, bắt đầu từ 1.
+    page: number;
+    // Số tài liệu tối đa được trả về trong một trang.
+    limit: number;
+    // Từ khóa tìm kiếm được áp dụng ở backend trên workspace hiện tại.
+    search?: string;
+};
+
+// Dữ liệu GET /user-documents sau khi service bỏ envelope thành công của API.
+export type PagedUserDocuments = {
+    // Tài liệu thuộc trang hiện tại, đã được xếp theo thời điểm cập nhật mới nhất.
+    items: UserDocumentSummary[];
+    // Tổng số tài liệu khớp từ khóa trên toàn workspace.
+    total: number;
+    // Trang backend đã trả về.
+    page: number;
+    // Kích thước trang đã dùng cho truy vấn.
+    limit: number;
+    // Tổng số trang; bằng 0 khi workspace chưa có tài liệu.
+    totalPages: number;
+};
+
 // Payload POST tạo tài liệu; title có thể bỏ trống để backend lấy tên từ mẫu nguồn.
 export type CreateUserDocumentRequest = {
     // Mẫu DOCX được dùng làm nguồn sao chép.
@@ -112,4 +136,41 @@ export type SaveUserDocumentRequest = {
     documentId: string;
     // File DOCX đã chỉnh sửa; backend tiếp tục xác thực MIME, định dạng và dung lượng.
     file: File;
+};
+
+// Cấu hình Docs API đã được backend ký; token chỉ sống ngắn hạn và không chứa secret.
+export type OnlyOfficeEditorConfig = {
+    documentType: 'word';
+    type: 'desktop';
+    width: '100%';
+    height: '100%';
+    token: string;
+    document: {
+        fileType: 'docx';
+        key: string;
+        title: string;
+        url: string;
+        permissions: {
+            edit: true;
+            download: true;
+            print: true;
+        };
+    };
+    editorConfig: {
+        // Docs Server v10 lit customization.font; truyền object dù chưa có tùy biến.
+        customization: Record<string, unknown>;
+        callbackUrl: string;
+        lang: 'vi';
+        mode: 'edit';
+        user: {
+            id: string;
+            name: string;
+        };
+    };
+};
+
+// URL script công khai cho browser và payload editor; API không gửi JWT secret xuống client.
+export type OnlyOfficeEditorConfigResponse = {
+    apiScriptUrl: string;
+    config: OnlyOfficeEditorConfig;
 };
