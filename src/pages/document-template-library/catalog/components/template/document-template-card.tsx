@@ -1,6 +1,8 @@
 // Thẻ DOCX kết hợp preview thật từ API với hành động xem và tạo bản sao.
+import { useState } from 'react';
 import { ArrowUpRight, FileText, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { getApiResourceUrl } from '@/shared/api/api-client';
 import type { DocumentTemplateCardProps } from '@/pages/document-template-library/catalog/types/document-template-ui.types';
 
@@ -10,16 +12,28 @@ export function DocumentTemplateCard({
     onPreview,
     onUse,
 }: DocumentTemplateCardProps) {
+    const [loadedPreviewUrl, setLoadedPreviewUrl] = useState<string | null>(
+        null,
+    );
+    const [failedPreviewUrl, setFailedPreviewUrl] = useState<string | null>(
+        null,
+    );
     const previewUrl = template.previewUrl
         ? getApiResourceUrl(template.previewUrl)
         : null;
+    const isPreviewLoaded = Boolean(
+        previewUrl && loadedPreviewUrl === previewUrl,
+    );
+    const isPreviewFailed = Boolean(
+        previewUrl && failedPreviewUrl === previewUrl,
+    );
 
     return (
         <article className="glass-panel group flex min-w-0 flex-col rounded-[25px] p-3.5 transition-[box-shadow,border-color] duration-300 hover:border-blue-200/90 hover:shadow-[0_26px_68px_rgba(37,99,235,0.14)] sm:p-4">
             <Button
                 type="button"
                 variant="ghost"
-                className="group/preview relative h-auto w-full rounded-[19px] border border-white/90 bg-gradient-to-br from-blue-100/80 via-sky-50 to-white/70 p-4 text-left whitespace-normal hover:bg-gradient-to-br hover:from-blue-100/80 hover:via-sky-50 hover:to-white/70 active:translate-y-0 focus-visible:ring-3 focus-visible:ring-blue-400/50"
+                className="group/preview relative flex aspect-[4/3] h-auto min-h-64 w-full items-center justify-center overflow-hidden rounded-[19px] border border-white/90 bg-gradient-to-br from-blue-100/80 via-sky-50 to-white/70 p-0 text-left whitespace-normal hover:bg-gradient-to-br hover:from-blue-100/80 hover:via-sky-50 hover:to-white/70 active:translate-y-0 focus-visible:ring-3 focus-visible:ring-blue-400/50"
                 onClick={() => onPreview(template)}
                 aria-label={`Xem trước mẫu ${template.name}`}
             >
@@ -27,20 +41,41 @@ export function DocumentTemplateCard({
                     className="absolute -right-8 -bottom-14 size-40 rounded-full bg-white/55 blur-2xl"
                     aria-hidden="true"
                 />
-                {!previewUrl && (
-                    <FileText
-                        className="absolute size-12 text-blue-500/70"
-                        aria-hidden="true"
-                    />
-                )}
-                {previewUrl && (
-                    <img
-                        src={previewUrl}
-                        alt={`Bản xem trước ${template.name}`}
-                        loading="lazy"
-                        decoding="async"
-                        className="relative z-10 h-full max-h-64 w-auto max-w-[78%] rounded-md object-contain shadow-[0_15px_32px_rgba(33,75,126,0.18)] transition-transform duration-300 group-hover/preview:scale-[1.02]"
-                    />
+                {!previewUrl || isPreviewFailed ? (
+                    <div className="relative z-10 flex h-[78%] max-h-64 w-[54%] max-w-[78%] flex-col items-center justify-center gap-3 rounded-[14px] border border-white/90 bg-white/80 px-4 text-center shadow-[0_15px_32px_rgba(33,75,126,0.12)]">
+                        <span className="grid size-12 place-items-center rounded-2xl bg-blue-50 text-blue-600">
+                            <FileText className="size-6" aria-hidden="true" />
+                        </span>
+                        <span className="text-xs font-medium text-slate-500">
+                            Chưa có ảnh xem trước
+                        </span>
+                    </div>
+                ) : (
+                    <>
+                        <div
+                            className={`pointer-events-none absolute z-20 flex h-[78%] max-h-64 w-[54%] max-w-[78%] flex-col rounded-[14px] border border-white/95 bg-white/90 p-4 shadow-[0_15px_32px_rgba(33,75,126,0.14)] transition-opacity duration-300 ${isPreviewLoaded ? 'opacity-0' : 'opacity-100'}`}
+                            aria-hidden="true"
+                        >
+                            <Skeleton className="h-2 w-3/5 bg-blue-100/90" />
+                            <Skeleton className="mt-2 h-2 w-full bg-slate-100" />
+                            <Skeleton className="mt-1.5 h-2 w-4/5 bg-slate-100" />
+                            <Skeleton className="mt-1.5 h-2 w-5/6 bg-slate-100" />
+                            <Skeleton className="mt-5 h-8 w-2/3 rounded-lg bg-blue-50" />
+                            <div className="mt-auto space-y-1.5">
+                                <Skeleton className="h-1.5 w-full bg-slate-100" />
+                                <Skeleton className="h-1.5 w-4/5 bg-slate-100" />
+                            </div>
+                        </div>
+                        <img
+                            src={previewUrl}
+                            alt={`Bản xem trước ${template.name}`}
+                            loading="lazy"
+                            decoding="async"
+                            onLoad={() => setLoadedPreviewUrl(previewUrl)}
+                            onError={() => setFailedPreviewUrl(previewUrl)}
+                            className={`relative z-10 h-full max-h-64 w-auto max-w-[78%] rounded-md object-contain shadow-[0_15px_32px_rgba(33,75,126,0.18)] transition-[opacity,transform] duration-300 group-hover/preview:scale-[1.02] ${isPreviewLoaded ? 'opacity-100' : 'opacity-0'}`}
+                        />
+                    </>
                 )}
                 <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full border border-white/90 bg-white/85 px-2.5 py-1 text-[10px] font-semibold tracking-wide text-blue-700 shadow-sm backdrop-blur">
                     DOCX
@@ -57,7 +92,10 @@ export function DocumentTemplateCard({
                     </span>
                     {template.isFeatured && (
                         <span className="inline-flex items-center gap-1 rounded-full border border-violet-200 bg-violet-50/90 px-2.5 py-1 text-[11px] font-semibold text-violet-700">
-                            <Star className="size-3 fill-violet-200" aria-hidden="true" />
+                            <Star
+                                className="size-3 fill-violet-200"
+                                aria-hidden="true"
+                            />
                             Nổi bật
                         </span>
                     )}

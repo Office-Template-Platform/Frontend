@@ -5,7 +5,6 @@ export function PresentationCatalogHeading() {
     return (
         <section className="page-heading">
             <div className="page-heading-copy">
-                <p className="page-eyebrow">Thư viện trình chiếu</p>
                 <h1>Mẫu trình chiếu</h1>
                 <p>Khám phá bộ slide để bắt đầu một bản trình chiếu mới.</p>
             </div>
