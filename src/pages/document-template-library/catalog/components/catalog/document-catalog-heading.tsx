@@ -5,7 +5,6 @@ export function DocumentCatalogHeading() {
     return (
         <section className="page-heading">
             <div className="page-heading-copy">
-                <p className="page-eyebrow">Thư viện văn bản</p>
                 <h1>Mẫu văn bản</h1>
                 <p>Chọn một mẫu DOCX để bắt đầu tài liệu theo đúng bố cục.</p>
             </div>
