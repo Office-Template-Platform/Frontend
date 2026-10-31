@@ -18,6 +18,9 @@ export function DocumentCatalogControls({
         (count, category) => count + category.templateCount,
         0,
     );
+    const categoriesWithTemplates = categories.filter(
+        (category) => category.templateCount > 0,
+    );
 
     return (
         <section
@@ -70,7 +73,7 @@ export function DocumentCatalogControls({
                         {categories.length > 0 ? allCategoryCount : '—'}
                     </span>
                 </Button>
-                {categories.map((category) => (
+                {categoriesWithTemplates.map((category) => (
                     <Button
                         key={category.id}
                         type="button"

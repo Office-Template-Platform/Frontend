@@ -1,7 +1,8 @@
 // Form của bước tạo bản sao: chỉ trình bày nguồn mẫu và nhận tiêu đề theo schema của feature.
-import { Check, FilePlus, FileText, LoaderCircle } from 'lucide-react';
+import { Check, FilePlus, LoaderCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import wordIcon from '@/assets/icons/microsoft-365/word.svg';
 import type { CreateDocumentFormProps } from '@/pages/document-template-library/catalog/components/create-document/types/create-document.types';
 
 // Giữ validation và lỗi trường tiêu đề gắn với form để người dùng sửa trực tiếp trước khi tạo tài liệu.
@@ -20,7 +21,11 @@ export function CreateDocumentForm({
         >
             <div className="flex flex-col gap-2.5 rounded-[18px] border border-blue-100/70 bg-white/60 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] sm:flex-row sm:items-center sm:justify-between">
                 <span className="flex size-9 shrink-0 items-center justify-center rounded-[12px] border border-white bg-blue-50/90 text-blue-600 shadow-sm">
-                    <FileText className="size-4" aria-hidden="true" />
+                    <img
+                        src={wordIcon}
+                        alt=""
+                        className="size-6 object-contain"
+                    />
                 </span>
                 <div className="min-w-0 flex-1">
                     <p className="text-[10px] font-semibold tracking-[0.12em] text-slate-500 uppercase">

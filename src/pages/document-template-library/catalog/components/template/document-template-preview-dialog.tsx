@@ -1,5 +1,5 @@
 // Dialog preview tải metadata chi tiết và ảnh từ API mà không rời catalog.
-import { Check, FilePlus, FileText, ImageOff } from 'lucide-react';
+import { FilePlus, FileText, ImageOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -126,22 +126,6 @@ export function DocumentTemplatePreviewDialog({
                                     </dd>
                                 </div>
                             </dl>
-                            <div className="mt-4 flex items-start gap-2.5 rounded-[16px] border border-emerald-100/90 bg-emerald-50/65 p-3">
-                                <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-white/90 text-emerald-600 shadow-sm">
-                                    <Check
-                                        className="size-3.5"
-                                        aria-hidden="true"
-                                    />
-                                </span>
-                                <div className="min-w-0 pt-0.5">
-                                    <p className="text-xs font-semibold text-emerald-900">
-                                        Tạo bản sao riêng
-                                    </p>
-                                    <p className="mt-0.5 text-[11px] leading-4.5 text-emerald-800/80">
-                                        Mẫu gốc không thay đổi.
-                                    </p>
-                                </div>
-                            </div>
                             {isError && (
                                 <p
                                     className="mt-3 rounded-[14px] border border-amber-100 bg-amber-50/75 p-3 text-xs leading-5 text-amber-700"

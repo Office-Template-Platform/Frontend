@@ -80,7 +80,7 @@ export function DocumentTemplateCard({
                 <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full border border-white/90 bg-white/85 px-2.5 py-1 text-[10px] font-semibold tracking-wide text-blue-700 shadow-sm backdrop-blur">
                     DOCX
                 </span>
-                <span className="absolute right-3 bottom-3 inline-flex size-9 items-center justify-center rounded-full border border-white/90 bg-white/85 text-blue-700 shadow-sm backdrop-blur transition-colors group-hover/preview:bg-white">
+                <span className="absolute right-3 bottom-3 z-20 inline-flex size-9 items-center justify-center rounded-full border border-white/90 bg-white/85 text-blue-700 shadow-sm backdrop-blur transition-colors group-hover/preview:bg-white">
                     <ArrowUpRight className="size-4" aria-hidden="true" />
                 </span>
             </Button>

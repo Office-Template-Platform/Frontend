@@ -32,12 +32,12 @@ body {
     background:
         radial-gradient(
             circle at 78% 6%,
-            rgb(179 217 255 / 35%),
+            rgb(179 217 255 / 25%),
             transparent 34rem
         ),
         radial-gradient(
             circle at 10% 82%,
-            rgb(200 226 255 / 32%),
+            rgb(200 226 255 / 22%),
             transparent 32rem
         ),
         linear-gradient(135deg, #f7fbff, #edf5ff 48%, #f4f9ff);
