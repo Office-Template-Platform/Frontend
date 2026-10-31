@@ -20,6 +20,8 @@
 - [Tổng quan](#tổng-quan)
 - [Tính năng](#tính-năng)
 - [Công nghệ chính](#công-nghệ-chính)
+- [Thư viện bên thứ ba và giấy phép](#thư-viện-bên-thứ-ba-và-giấy-phép)
+- [Khai báo sử dụng AI](#khai-báo-sử-dụng-ai)
 - [Yêu cầu](#yêu-cầu)
 - [Bắt đầu](#bắt-đầu)
     - [Cấu hình ONLYOFFICE](#cấu-hình-onlyoffice)
@@ -65,6 +67,28 @@ Frontend nằm trong thư mục này. Hướng dẫn về API NestJS, cơ sở d
 | Form và xác thực dữ liệu           | React Hook Form, Zod, `@hookform/resolvers` | Quản lý form và kiểm tra dữ liệu đầu vào                  |
 | Thông báo                          | Sonner                                      | Hiển thị kết quả thao tác và lỗi API                      |
 | Trình soạn thảo                    | ONLYOFFICE Docs                             | Chỉnh sửa DOCX và PPTX trên web                           |
+
+## Thư viện bên thứ ba và giấy phép
+
+Danh sách gồm dependency trực tiếp của web trong `dependencies` và `devDependencies`. Giấy phép lấy từ metadata của phiên bản đã cài; `package-lock.json` khóa phiên bản sử dụng. Dependency bắc cầu không liệt kê riêng ở đây.
+
+### Runtime
+
+- **MIT:** `@hookform/resolvers`, `@reduxjs/toolkit`, `@tailwindcss/vite`, `cn`, `radix-ui`, `react`, `react-dom`, `react-hook-form`, `react-redux`, `react-router-dom`, `sonner`, `tailwindcss`, `tw-animate-css`, `zod`.
+- **Apache-2.0:** `class-variance-authority`.
+- **ISC:** `lucide-react`.
+- **SIL Open Font License 1.1:** `@fontsource-variable/geist`.
+
+### Công cụ phát triển
+
+- **MIT:** `@types/node`, `@types/react`, `@types/react-dom`, `@vitejs/plugin-react`, `eslint`, `globals`, `prettier`, `shadcn`, `typescript-eslint`, `vite`.
+- **Apache-2.0:** `typescript`.
+
+ONLYOFFICE Docs Community 10.0.0 là dịch vụ editor bên ngoài dependency npm của web; giấy phép là AGPL v3 ([điều khoản chính thức](https://www.onlyoffice.com/legalterms)).
+
+## Khai báo sử dụng AI
+
+Dự án có sử dụng **OpenAI Codex với model GPT-6 Luna** để hỗ trợ phân tích yêu cầu, đề xuất cấu trúc, viết và chỉnh sửa mã nguồn/tài liệu, cũng như phân tích lỗi. Người thực hiện chịu trách nhiệm rà soát kết quả và quyết định nội dung bàn giao.
 
 ## Yêu cầu
 
@@ -152,15 +176,19 @@ Khi xóa tài liệu đã lưu, API chỉ đặt trạng thái xóa mềm. Bản
 
 Frontend hiện sử dụng các khả năng API sau:
 
-| Luồng                        | Endpoint được sử dụng                                                                                                |
-| ---------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| Thư viện DOCX                | `GET /document-templates`, `GET /document-templates/categories`, `GET /document-templates/:templateId`               |
-| Tạo bản sao DOCX             | `POST /document-templates/:templateId/documents`                                                                     |
-| Thư viện và tạo bản sao PPTX | `GET /presentation-templates`, `POST /presentation-templates/:templateId/documents`                                  |
-| Tài liệu của tôi             | `GET /user-documents` và các URL metadata/tải file                                                                   |
-| Chỉnh sửa bằng ONLYOFFICE    | `GET /user-documents/:documentId/editor-config`; xác nhận lưu đi qua callback của API                                |
-| Tải file Office đã sửa lên   | `PUT /user-documents/:documentId/content`                                                                            |
-| Thùng rác và khôi phục       | `DELETE /user-documents/:documentId`, `GET /user-documents/trash/items`, `PATCH /user-documents/:documentId/restore` |
+| Luồng                          | Endpoint được sử dụng                                                                                                          |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
+| Thư viện DOCX                  | `GET /document-templates`, `GET /document-templates/categories`, `GET /document-templates/:templateId`                         |
+| Tạo bản sao DOCX               | `POST /document-templates/:templateId/documents`                                                                               |
+| Thư viện PPTX                  | `GET /presentation-templates`                                                                                                  |
+| Chi tiết và preview slide PPTX | `GET /presentation-templates/:templateId`, `GET /presentation-templates/:templateId/slides/:slideNumber/preview`              |
+| Tạo bản sao PPTX               | `POST /presentation-templates/:templateId/documents`                                                                           |
+| Tài liệu của tôi               | `GET /user-documents` và các URL metadata/tải file                                                                             |
+| Chỉnh sửa bằng ONLYOFFICE      | `GET /user-documents/:documentId/editor-config`; xác nhận lưu đi qua callback của API                                          |
+| Tải file Office đã sửa lên     | `PUT /user-documents/:documentId/content`                                                                                      |
+| Thùng rác và khôi phục         | `DELETE /user-documents/:documentId`, `GET /user-documents/trash/items`, `PATCH /user-documents/:documentId/restore`            |
+
+API chi tiết mẫu PPTX trả danh sách slide theo thứ tự cùng `slideNumber`, `title` và `previewUrl`. Frontend dùng URL preview để tải ảnh PNG của slide đang chọn và các thumbnail trong hộp thoại.
 
 Tìm kiếm, lọc danh mục và phân trang của thư viện DOCX được gửi lên API. Endpoint PPTX hiện trả về toàn bộ metadata mẫu, nên frontend tìm kiếm và lọc danh mục trên dữ liệu đã tải; thư viện PPTX chưa có phân trang. Nếu API chưa có mẫu được phát hành, giao diện hiển thị trạng thái trống thay vì tự tạo dữ liệu demo.
 
