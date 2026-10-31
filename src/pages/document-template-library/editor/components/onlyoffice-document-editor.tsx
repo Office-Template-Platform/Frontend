@@ -121,7 +121,7 @@ export function OnlyOfficeDocumentEditor({
     return (
         <div
             role="region"
-            aria-label="Trình soạn thảo DOCX"
+            aria-label={`Trình soạn thảo ${config.document.fileType.toUpperCase()}`}
             aria-busy={isClosing}
             className="h-full min-h-[480px] w-full"
         >

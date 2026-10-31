@@ -1,8 +1,9 @@
-// Endpoint truy vấn catalog PPTX; giữ API riêng theo domain để có thể mở rộng độc lập.
-// Hiện chỉ khai báo thao tác đọc mà backend hỗ trợ, không giả lập dữ liệu hay hành động khác.
+// Endpoint catalog và tạo bản sao PPTX; giữ API riêng theo domain để có thể mở rộng độc lập.
 import { apiClient } from '@/shared/api/api-client';
 import type { ApiSuccessResponse } from '@/shared/api/api-response.types';
+import type { UserDocumentSummary } from '@/services/document-template';
 import type { PresentationTemplateSummary } from '../types/presentation-template.types';
+import type { CreateUserPresentationRequest } from '../types/presentation-template.types';
 
 // Inject endpoint vào API slice chung để PPTX dùng chung Redux store và cache với các domain khác.
 export const presentationTemplateApi = apiClient.injectEndpoints({
@@ -33,8 +34,29 @@ export const presentationTemplateApi = apiClient.injectEndpoints({
                       ]
                     : [{ type: 'PresentationTemplates', id: 'LIST' }],
         }),
+        // [POST] /api/presentation-templates/:templateId/documents
+        // Tạo bản PPTX riêng trong workspace trình duyệt; file mẫu gốc không bị thay đổi.
+        createUserPresentation: build.mutation<
+            UserDocumentSummary,
+            CreateUserPresentationRequest
+        >({
+            query: ({ templateId, title }) => ({
+                url: `presentation-templates/${encodeURIComponent(templateId)}/documents`,
+                method: 'POST',
+                body: { title: title?.trim() || undefined },
+            }),
+            // API trả envelope chung; page nhận metadata tài liệu để hiện link tải sau khi tạo.
+            transformResponse: (
+                response: ApiSuccessResponse<UserDocumentSummary>,
+            ) => response.data,
+            // Cập nhật danh sách file cá nhân khi bản trình chiếu mới được tạo.
+            invalidatesTags: [{ type: 'UserDocuments', id: 'LIST' }],
+        }),
     }),
 });
 
 // Hook truy vấn được component catalog sử dụng để nhận data và trạng thái loading/error.
-export const { useListPresentationTemplatesQuery } = presentationTemplateApi;
+export const {
+    useCreateUserPresentationMutation,
+    useListPresentationTemplatesQuery,
+} = presentationTemplateApi;

@@ -1,4 +1,4 @@
-// Page sửa DOCX trong ONLYOFFICE; route độc lập để editor được toàn bộ chiều cao cửa sổ.
+// Page sửa DOCX/PPTX trong ONLYOFFICE; route riêng để editor có toàn bộ chiều cao cửa sổ.
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ArrowLeft, LoaderCircle, TriangleAlert } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -14,8 +14,7 @@ import { DocumentEditorSidebar } from '@/pages/document-template-library/editor/
 import { DocumentSaveProgress } from '@/pages/document-template-library/editor/components/document-save-progress';
 import { OnlyOfficeDocumentEditor } from '@/pages/document-template-library/editor/components/onlyoffice-document-editor';
 
-// Dựng sidebar điều khiển bên trái trên desktop và giữ thanh ngang trên mobile để vùng DOCX luôn đủ rộng.
-// Khi lưu, đóng phiên ONLYOFFICE rồi chờ callback cập nhật revision trước khi điều hướng về thư viện.
+// Dựng sidebar trên desktop/mobile; khi lưu, chờ callback cập nhật revision rồi về danh sách file cá nhân.
 export function DocumentEditorPage() {
     const { documentId } = useParams();
     const navigate = useNavigate();
@@ -75,9 +74,9 @@ export function DocumentEditorPage() {
         // Docs Server thường gửi callback sau khi đóng editor; hết thời gian vẫn cho phép quay lại.
         const timeoutId = window.setTimeout(() => {
             toast.warning(
-                'Chưa nhận được xác nhận lưu. Hãy kiểm tra lại tài liệu trong thư viện.',
+                'Chưa nhận được xác nhận lưu. Hãy kiểm tra lại file trong tài liệu của tôi.',
             );
-            navigate(ROUTE_PATHS.documentTemplateCatalog, { replace: true });
+            navigate(ROUTE_PATHS.userDocuments, { replace: true });
         }, 15_000);
 
         return () => window.clearTimeout(timeoutId);
@@ -94,9 +93,12 @@ export function DocumentEditorPage() {
         }
 
         // Chỉ báo lưu thành công khi metadata từ API phản ánh object revision vừa được thay thế.
-        toast.success('Đã lưu nội dung DOCX đã chỉnh sửa.');
-        navigate(ROUTE_PATHS.documentTemplateCatalog, { replace: true });
-    }, [document, isWaitingForSave, navigate]);
+        const fileType = editorConfig?.config.document.fileType ?? 'docx';
+        toast.success(
+            `Đã lưu nội dung ${fileType.toUpperCase()} đã chỉnh sửa.`,
+        );
+        navigate(ROUTE_PATHS.userDocuments, { replace: true });
+    }, [document, editorConfig, isWaitingForSave, navigate]);
 
     // Cho phép rời trang khi tài liệu lỗi; nếu có thay đổi thì đóng iframe để ONLYOFFICE gửi callback status 2.
     function handleSaveAndExit(): void {
@@ -104,14 +106,14 @@ export function DocumentEditorPage() {
             return;
         }
 
-        // Khi tải tài liệu lỗi, giữ lối quay về thư viện để nút điều hướng không bị khóa theo nút lưu.
+        // Khi tải tài liệu lỗi, vẫn giữ lối về danh sách file cá nhân.
         if (!document) {
-            navigate(ROUTE_PATHS.documentTemplateCatalog);
+            navigate(ROUTE_PATHS.userDocuments);
             return;
         }
 
         if (!hasChanges) {
-            navigate(ROUTE_PATHS.documentTemplateCatalog);
+            navigate(ROUTE_PATHS.userDocuments);
             return;
         }
 
@@ -161,6 +163,7 @@ export function DocumentEditorPage() {
             >
                 <DocumentEditorSidebar
                     title={document?.title ?? 'Đang mở tài liệu…'}
+                    fileType={editorConfig?.config.document.fileType ?? 'docx'}
                     status={headerStatus}
                     canSave={Boolean(document) && !isWaitingForSave}
                     onSaveAndExit={handleSaveAndExit}
@@ -199,11 +202,9 @@ export function DocumentEditorPage() {
                                     variant="outline"
                                     className="rounded-xl bg-white"
                                 >
-                                    <Link
-                                        to={ROUTE_PATHS.documentTemplateCatalog}
-                                    >
+                                    <Link to={ROUTE_PATHS.userDocuments}>
                                         <ArrowLeft aria-hidden="true" />
-                                        Về thư viện văn bản
+                                        Về tài liệu của tôi
                                     </Link>
                                 </Button>
                             </div>
@@ -217,7 +218,14 @@ export function DocumentEditorPage() {
                                     onChange={handleEditorChange}
                                     onError={handleEditorError}
                                 />
-                                {isWaitingForSave && <DocumentSaveProgress />}
+                                {isWaitingForSave && (
+                                    <DocumentSaveProgress
+                                        fileType={
+                                            editorConfig?.config.document
+                                                .fileType ?? 'docx'
+                                        }
+                                    />
+                                )}
                                 {editorError && (
                                     <div
                                         className="absolute inset-x-4 bottom-4 z-30 mx-auto max-w-xl rounded-xl border border-red-200 bg-white p-3 text-sm text-red-700 shadow-lg"

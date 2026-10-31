@@ -3,4 +3,6 @@ import type { PresentationTemplateSummary } from '@/services/presentation-templa
 
 export type PresentationTemplateCardProps = {
     template: PresentationTemplateSummary;
+    onUse: (template: PresentationTemplateSummary) => void;
+    onPreview: (template: PresentationTemplateSummary) => void;
 };

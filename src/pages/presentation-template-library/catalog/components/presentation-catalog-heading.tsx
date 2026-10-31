@@ -1,12 +1,10 @@
-// Tiêu đề của catalog trình chiếu; không chứa dữ liệu mẫu hoặc điều hướng.
-
-// Giới thiệu định dạng PPTX và mục đích của trang catalog.
+// Giới thiệu thư viện PPTX theo cùng nhịp heading và nhãn định dạng của catalog DOCX.
 export function PresentationCatalogHeading() {
     return (
         <section className="page-heading">
             <div className="page-heading-copy">
                 <h1>Mẫu trình chiếu</h1>
-                <p>Khám phá bộ slide để bắt đầu một bản trình chiếu mới.</p>
+                <p>Chọn một mẫu PPTX để bắt đầu bài thuyết trình của bạn.</p>
             </div>
             <span className="format-pill format-pill-presentation">PPTX</span>
         </section>

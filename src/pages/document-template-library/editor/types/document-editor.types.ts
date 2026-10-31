@@ -32,6 +32,7 @@ export type OnlyOfficeDocumentEditorProps = {
 // Status điều khiển nhãn hiển thị, còn canSave quyết định nút lưu có khả dụng không.
 export type DocumentEditorSidebarProps = {
     title: string;
+    fileType: 'docx' | 'pptx';
     status: 'loading' | 'ready' | 'edited' | 'saving' | 'error';
     canSave: boolean;
     onSaveAndExit: () => void;

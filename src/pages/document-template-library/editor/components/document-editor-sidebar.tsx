@@ -1,17 +1,18 @@
-// Sidebar DOCX dùng rail kính trên desktop và chuyển thành thanh ngang trên mobile.
+// Sidebar sửa tài liệu Office dùng rail kính trên desktop và chuyển thành thanh ngang trên mobile.
 import {
     ArrowLeft,
     Check,
     CircleAlert,
-    FileText,
     LoaderCircle,
     PencilLine,
     Save,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import powerpointIcon from '@/assets/icons/microsoft-365/powerpoint.svg';
+import wordIcon from '@/assets/icons/microsoft-365/word.svg';
 import type { DocumentEditorSidebarProps } from '@/pages/document-template-library/editor/types/document-editor.types';
 
-// Mở rộng sidebar trong luồng flex để vùng Word dịch chuyển theo, không bị card phủ lên.
+// Mở rộng sidebar trong luồng flex để vùng soạn thảo dịch chuyển theo, không bị card phủ lên.
 const editorSidebarClassName = [
     'glass-panel group/editor-sidebar z-20 flex h-12 shrink-0 items-center justify-between gap-2 border-b border-slate-200 bg-white px-3 text-slate-900',
     'sm:px-5 lg:my-3 lg:ml-3 lg:h-[calc(100dvh-24px)] lg:w-18 lg:shrink-0 lg:flex-col lg:items-stretch lg:gap-0 lg:overflow-hidden lg:rounded-[24px] lg:border lg:border-white/85 lg:bg-linear-to-br lg:from-white/80 lg:via-sky-50/65 lg:to-blue-100/45 lg:px-3 lg:pt-3.5 lg:pb-3 lg:shadow-[0_18px_48px_rgb(45_92_148/14%),inset_0_1px_0_rgb(255_255_255/96%)] lg:backdrop-blur-2xl',
@@ -38,9 +39,10 @@ const statusBadgeClasses = {
     ready: 'border-emerald-200 bg-emerald-50 text-emerald-700',
 } as const;
 
-// Hiển thị trạng thái DOCX và giữ nguyên callback lưu/quay lại do trang cha cung cấp.
+// Hiển thị trạng thái file Office và giữ callback lưu/quay lại do trang cha cung cấp.
 export function DocumentEditorSidebar({
     title,
+    fileType,
     status,
     canSave,
     onSaveAndExit,
@@ -55,7 +57,7 @@ export function DocumentEditorSidebar({
                 : statusBadgeClasses.ready;
     const isUnavailable = !canSave && status !== 'saving';
     const saveActionLabel = isUnavailable
-        ? 'Về thư viện'
+        ? 'Về tài liệu của tôi'
         : status === 'saving'
           ? 'Đang lưu…'
           : 'Lưu & thoát';
@@ -79,8 +81,8 @@ export function DocumentEditorSidebar({
                         size="icon"
                         aria-label={
                             isUnavailable
-                                ? 'Về thư viện văn bản'
-                                : 'Lưu thay đổi và quay lại thư viện văn bản'
+                                ? 'Về tài liệu của tôi'
+                                : 'Lưu thay đổi và quay lại tài liệu của tôi'
                         }
                         onClick={onSaveAndExit}
                         className="size-8 shrink-0 rounded-md text-slate-500 hover:bg-blue-50 hover:text-blue-700"
@@ -141,10 +143,10 @@ export function DocumentEditorSidebar({
                         variant="ghost"
                         aria-label={
                             isUnavailable
-                                ? 'Về thư viện văn bản'
-                                : 'Lưu thay đổi và quay lại thư viện văn bản'
+                                ? 'Về tài liệu của tôi'
+                                : 'Lưu thay đổi và quay lại tài liệu của tôi'
                         }
-                        title="Về thư viện văn bản"
+                        title="Về tài liệu của tôi"
                         onClick={onSaveAndExit}
                         className="relative h-11 w-full justify-start rounded-[15px] border border-white/80 bg-white/55 px-0 text-slate-600 shadow-[inset_0_1px_0_rgb(255_255_255/95%)] transition-colors hover:bg-white/85 hover:text-blue-700"
                     >
@@ -153,9 +155,9 @@ export function DocumentEditorSidebar({
                             aria-hidden="true"
                         />
                         <span
-                            className={`${desktopRevealClassName} ${desktopRevealVisibilityClassName} left-8 right-24 text-sm font-medium`}
+                            className={`${desktopRevealClassName} ${desktopRevealVisibilityClassName} left-8 right-36 text-sm font-medium`}
                         >
-                            Thư viện
+                            Tài liệu
                         </span>
                         <span
                             className={`${desktopRevealClassName} ${desktopRevealVisibilityClassName} right-2.5 inline-flex h-7 items-center gap-1.5 rounded-full border px-2.5 text-[10px] font-semibold leading-none shadow-[inset_0_1px_0_rgb(255_255_255/90%)] ${statusClassName}`}
@@ -177,7 +179,15 @@ export function DocumentEditorSidebar({
                             className="absolute top-0 left-0 grid size-11 shrink-0 place-items-center rounded-[15px] border border-white/85 bg-white/65 text-blue-600 shadow-[inset_0_1px_0_rgb(255_255_255/95%),0_6px_18px_rgb(50_105_174/8%)]"
                             aria-hidden="true"
                         >
-                            <FileText className="size-5" strokeWidth={1.8} />
+                            <img
+                                src={
+                                    fileType === 'pptx'
+                                        ? powerpointIcon
+                                        : wordIcon
+                                }
+                                alt=""
+                                className="size-7 object-contain"
+                            />
                         </span>
                         <div
                             className={`absolute top-1/2 right-0 left-14 -translate-y-1/2 overflow-hidden ${desktopRevealVisibilityClassName}`}
@@ -193,7 +203,7 @@ export function DocumentEditorSidebar({
                     type="button"
                     aria-label={
                         isUnavailable
-                            ? 'Về thư viện văn bản'
+                            ? 'Về tài liệu của tôi'
                             : status === 'saving'
                               ? 'Đang lưu và thoát'
                               : 'Lưu và thoát'

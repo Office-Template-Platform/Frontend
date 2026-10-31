@@ -13,3 +13,9 @@ export type PresentationTemplateSummary = {
     // Số slide của bộ mẫu, dùng làm metadata tóm tắt.
     slideCount: number;
 };
+
+// Payload tạo bản sao độc lập; backend tự dùng tên mẫu nếu title không được gửi.
+export type CreateUserPresentationRequest = {
+    templateId: string;
+    title?: string;
+};
