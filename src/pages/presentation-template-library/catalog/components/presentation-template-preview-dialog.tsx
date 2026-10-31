@@ -1,4 +1,4 @@
-// Hộp thoại xem nhiều slide và thông tin chi tiết của bộ mẫu PPTX.
+// Hộp thoại xem nhiều slide và giữ nút trước/sau cố định khi nhấn điều hướng.
 import { useEffect, useState } from 'react';
 import {
     ChevronLeft,
@@ -214,7 +214,7 @@ export function PresentationTemplatePreviewDialog({
                                             aria-label="Xem slide trước"
                                             disabled={activeSlideIndex === 0}
                                             onClick={() => handleMoveSlide(-1)}
-                                            className="pointer-events-auto absolute top-1/2 left-3 z-20 size-9 -translate-y-1/2 cursor-pointer rounded-full border-white/90 bg-white/90 text-slate-700 shadow-lg hover:bg-white disabled:cursor-not-allowed disabled:opacity-40 sm:left-4"
+                                            className="pointer-events-auto absolute top-1/2 left-3 z-20 size-9 -translate-y-1/2 cursor-pointer rounded-full border-white/90 bg-white/90 text-slate-700 shadow-lg hover:border-blue-600 hover:bg-blue-600 hover:text-white active:not-aria-[haspopup]:-translate-y-1/2 disabled:cursor-not-allowed disabled:opacity-40 sm:left-4"
                                         >
                                             <ChevronLeft aria-hidden="true" />
                                         </Button>
@@ -228,7 +228,7 @@ export function PresentationTemplatePreviewDialog({
                                                 slides.length - 1
                                             }
                                             onClick={() => handleMoveSlide(1)}
-                                            className="pointer-events-auto absolute top-1/2 right-3 z-20 size-9 -translate-y-1/2 cursor-pointer rounded-full border-white/90 bg-white/90 text-slate-700 shadow-lg hover:bg-white disabled:cursor-not-allowed disabled:opacity-40 sm:right-4"
+                                            className="pointer-events-auto absolute top-1/2 right-3 z-20 size-9 -translate-y-1/2 cursor-pointer rounded-full border-white/90 bg-white/90 text-slate-700 shadow-lg hover:border-blue-600 hover:bg-blue-600 hover:text-white active:not-aria-[haspopup]:-translate-y-1/2 disabled:cursor-not-allowed disabled:opacity-40 sm:right-4"
                                         >
                                             <ChevronRight aria-hidden="true" />
                                         </Button>
