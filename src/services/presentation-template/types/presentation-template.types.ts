@@ -14,6 +14,22 @@ export type PresentationTemplateSummary = {
     slideCount: number;
 };
 
+// Một ảnh xem trước được backend liên kết với số thứ tự trong version hiện hành.
+export type PresentationSlidePreviewSummary = {
+    slideNumber: number;
+    title: string | null;
+    previewUrl: string;
+};
+
+// Detail API trả metadata catalog cùng toàn bộ URL preview theo thứ tự slide.
+export type PresentationTemplateDetail = PresentationTemplateSummary & {
+    slug: string;
+    categoryId: string;
+    slides: PresentationSlidePreviewSummary[];
+    createdAt: string;
+    updatedAt: string;
+};
+
 // Payload tạo bản sao độc lập; backend tự dùng tên mẫu nếu title không được gửi.
 export type CreateUserPresentationRequest = {
     templateId: string;

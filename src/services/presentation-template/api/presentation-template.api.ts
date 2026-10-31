@@ -2,12 +2,30 @@
 import { apiClient } from '@/shared/api/api-client';
 import type { ApiSuccessResponse } from '@/shared/api/api-response.types';
 import type { UserDocumentSummary } from '@/services/document-template';
-import type { PresentationTemplateSummary } from '../types/presentation-template.types';
-import type { CreateUserPresentationRequest } from '../types/presentation-template.types';
+import type {
+    CreateUserPresentationRequest,
+    PresentationTemplateDetail,
+    PresentationTemplateSummary,
+} from '../types/presentation-template.types';
 
 // Inject endpoint vào API slice chung để PPTX dùng chung Redux store và cache với các domain khác.
 export const presentationTemplateApi = apiClient.injectEndpoints({
     endpoints: (build) => ({
+        // [GET] /api/presentation-templates/:templateId
+        // Lấy thứ tự, tiêu đề và URL preview từng slide cho hộp thoại xem trước.
+        getPresentationTemplate: build.query<
+            PresentationTemplateDetail,
+            string
+        >({
+            query: (templateId) =>
+                `presentation-templates/${encodeURIComponent(templateId)}`,
+            transformResponse: (
+                response: ApiSuccessResponse<PresentationTemplateDetail>,
+            ) => response.data,
+            providesTags: (_result, _error, templateId) => [
+                { type: 'PresentationTemplates', id: templateId },
+            ],
+        }),
         // [GET] /api/presentation-templates
         // Lấy danh sách metadata bộ mẫu PPTX đã được backend công bố.
         // Endpoint hiện không nhận query parameters; response data là mảng PresentationTemplateSummary.
@@ -58,5 +76,6 @@ export const presentationTemplateApi = apiClient.injectEndpoints({
 // Hook truy vấn được component catalog sử dụng để nhận data và trạng thái loading/error.
 export const {
     useCreateUserPresentationMutation,
+    useGetPresentationTemplateQuery,
     useListPresentationTemplatesQuery,
 } = presentationTemplateApi;
