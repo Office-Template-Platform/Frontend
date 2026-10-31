@@ -209,6 +209,33 @@
     color: var(--blue-deep);
     background: white;
 }
+.presentation-slide-filmstrip {
+    scrollbar-color: rgb(119 157 198 / 48%) transparent;
+    scrollbar-width: thin;
+}
+.presentation-slide-filmstrip::-webkit-scrollbar {
+    height: 4px;
+    cursor: pointer;
+}
+.presentation-slide-filmstrip::-webkit-scrollbar-track {
+    border-radius: 999px;
+    background: transparent;
+    cursor: pointer;
+}
+.presentation-slide-filmstrip::-webkit-scrollbar-thumb {
+    border: 1px solid transparent;
+    border-radius: 999px;
+    background: rgb(119 157 198 / 48%);
+    background-clip: padding-box;
+    cursor: pointer;
+    transition: background-color 180ms ease;
+}
+.presentation-slide-filmstrip::-webkit-scrollbar-button {
+    cursor: pointer;
+}
+.presentation-slide-filmstrip:hover::-webkit-scrollbar-thumb {
+    background-color: rgb(80 132 191 / 68%);
+}
 @media (max-width: 820px) {
     .empty-panel {
         grid-template-columns: minmax(160px, 205px) minmax(0, 1fr);
