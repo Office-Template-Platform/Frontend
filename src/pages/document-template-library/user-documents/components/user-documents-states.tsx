@@ -2,6 +2,7 @@
 import {
     FilePlus,
     FolderOpen,
+    Presentation,
     RefreshCw,
     Search,
     TriangleAlert,
@@ -56,10 +57,11 @@ export function UserDocumentsSkeleton() {
                                 <Skeleton className="h-4 w-4/5 bg-slate-100" />
                             </div>
                         </div>
-                        <div className="flex gap-2 pl-[54px] sm:pl-0">
-                            <Skeleton className="h-7 w-24 rounded-full bg-emerald-100/80" />
+                        {/* Mô phỏng đúng các nút còn lại; badge Sẵn sàng đã được bỏ khỏi từng dòng. */}
+                        <div className="flex items-center gap-2 pl-[54px] sm:pl-0">
                             <Skeleton className="h-9 w-20 rounded-[12px] bg-blue-100/80" />
-                            <Skeleton className="h-9 w-24 rounded-[12px] bg-white" />
+                            <Skeleton className="h-9 w-28 rounded-[12px] bg-white" />
+                            <Skeleton className="size-9 shrink-0 rounded-[12px] border border-rose-100 bg-white" />
                         </div>
                     </div>
                 ))}
@@ -90,7 +92,7 @@ export function UserDocumentsEmptyState({
             <p className="mt-2 max-w-md text-sm leading-6 text-(--muted-ink)">
                 {hasSearch
                     ? 'Thử từ khóa khác để tìm trong các tài liệu đã tạo.'
-                    : 'Tạo một bản DOCX từ mẫu, sau đó tài liệu sẽ xuất hiện tại đây để bạn mở lại.'}
+                    : 'Tạo bản Word hoặc PowerPoint từ thư viện mẫu, sau đó file sẽ xuất hiện tại đây để bạn mở lại hoặc tải xuống.'}
             </p>
             {hasSearch ? (
                 <Button
@@ -102,15 +104,27 @@ export function UserDocumentsEmptyState({
                     Xóa tìm kiếm
                 </Button>
             ) : (
-                <Button
-                    asChild
-                    className="mt-5 h-10 rounded-[13px] bg-blue-600 px-4 text-white shadow-[0_8px_20px_rgb(33_118_229/18%)] hover:bg-blue-700"
-                >
-                    <Link to={ROUTE_PATHS.documentTemplateCatalog}>
-                        <FilePlus aria-hidden="true" />
-                        Tạo tài liệu từ mẫu
-                    </Link>
-                </Button>
+                <div className="mt-5 flex flex-wrap justify-center gap-2.5">
+                    <Button
+                        asChild
+                        className="h-10 rounded-[13px] bg-blue-600 px-4 text-white shadow-[0_8px_20px_rgb(33_118_229/18%)] hover:bg-blue-700"
+                    >
+                        <Link to={ROUTE_PATHS.documentTemplateCatalog}>
+                            <FilePlus aria-hidden="true" />
+                            Mẫu Word
+                        </Link>
+                    </Button>
+                    <Button
+                        asChild
+                        variant="outline"
+                        className="h-10 rounded-[13px] border-blue-100 bg-white/80 px-4 text-blue-800 hover:bg-blue-50"
+                    >
+                        <Link to={ROUTE_PATHS.presentationTemplateCatalog}>
+                            <Presentation aria-hidden="true" />
+                            Mẫu PowerPoint
+                        </Link>
+                    </Button>
+                </div>
             )}
         </section>
     );

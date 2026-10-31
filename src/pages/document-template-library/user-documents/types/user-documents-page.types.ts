@@ -14,12 +14,16 @@ export type UserDocumentsToolbarProps = {
 export type UserDocumentsCollectionProps = {
     recentDocument: UserDocumentSummary | null;
     documents: UserDocumentSummary[];
+    isDeleting: boolean;
+    onDelete: (document: UserDocumentSummary) => void;
 };
 
 // Một dòng trong danh sách dùng cùng thông tin và hành động với mục nổi bật.
 export type UserDocumentRowProps = {
     document: UserDocumentSummary;
     featured?: boolean;
+    isDeleting: boolean;
+    onDelete: (document: UserDocumentSummary) => void;
 };
 
 // Trạng thái gọn dùng lại trong vùng nổi bật và từng dòng của danh sách.

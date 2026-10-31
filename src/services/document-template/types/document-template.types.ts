@@ -1,4 +1,4 @@
-// Hợp đồng dữ liệu DOCX trao đổi với backend; giữ kiểu này ở service để UI không định nghĩa lại DTO.
+// Hợp đồng dữ liệu tài liệu Office trao đổi với backend; giữ kiểu này ở service để UI không định nghĩa lại DTO.
 
 // Một mẫu DOCX trong response danh sách; chỉ chứa metadata cần cho catalog.
 export type DocumentTemplateListItem = {
@@ -71,7 +71,7 @@ export type DocumentTemplateListQuery = {
     categoryId?: string;
 };
 
-// Metadata tài liệu riêng được tạo từ mẫu hoặc cập nhật bằng file DOCX của người dùng.
+// Metadata tài liệu riêng được tạo từ mẫu hoặc cập nhật bằng file Office của người dùng.
 export type UserDocumentSummary = {
     // ID của tài liệu riêng, khác ID của mẫu nguồn.
     id: string;
@@ -87,6 +87,8 @@ export type UserDocumentSummary = {
     updatedAt: string;
     // URL tải chỉ có thể được cung cấp khi tài liệu đã sẵn sàng.
     downloadUrl: string | null;
+    // Định dạng được backend suy ra từ file đầu ra; null khi bản sao chưa có file.
+    fileType?: 'docx' | 'pptx' | null;
     // Dấu vết mẫu và phiên bản đã dùng để tạo tài liệu này.
     sourceTemplate: {
         // ID của mẫu nguồn, khác với ID tài liệu riêng ở phía trên.
@@ -124,7 +126,7 @@ export type PagedUserDocuments = {
 
 // Payload POST tạo tài liệu; title có thể bỏ trống để backend lấy tên từ mẫu nguồn.
 export type CreateUserDocumentRequest = {
-    // Mẫu DOCX được dùng làm nguồn sao chép.
+    // Mẫu DOCX hoặc PPTX được dùng làm nguồn sao chép.
     templateId: string;
     // Tên tùy chọn do người dùng nhập.
     title?: string;
@@ -134,19 +136,19 @@ export type CreateUserDocumentRequest = {
 export type SaveUserDocumentRequest = {
     // ID tài liệu riêng đã được tạo, không phải ID mẫu nguồn.
     documentId: string;
-    // File DOCX đã chỉnh sửa; backend tiếp tục xác thực MIME, định dạng và dung lượng.
+    // File Office đã chỉnh sửa; backend xác thực MIME, định dạng và dung lượng.
     file: File;
 };
 
 // Cấu hình Docs API đã được backend ký; token chỉ sống ngắn hạn và không chứa secret.
 export type OnlyOfficeEditorConfig = {
-    documentType: 'word';
+    documentType: 'word' | 'slide';
     type: 'desktop';
     width: '100%';
     height: '100%';
     token: string;
     document: {
-        fileType: 'docx';
+        fileType: 'docx' | 'pptx';
         key: string;
         title: string;
         url: string;

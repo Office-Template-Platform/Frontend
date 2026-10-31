@@ -106,6 +106,30 @@ export const documentTemplateApi = apiClient.injectEndpoints({
                       ]
                     : [{ type: 'UserDocuments', id: 'LIST' }],
         }),
+        // [GET] /api/user-documents/trash/items
+        // Lấy riêng tài liệu đã xóa mềm; fileType còn được giữ để UI hiện biểu tượng DOCX/PPTX.
+        listTrashedUserDocuments: build.query<
+            PagedUserDocuments,
+            UserDocumentListQuery
+        >({
+            query: (params) => ({
+                url: 'user-documents/trash/items',
+                params,
+            }),
+            transformResponse: (
+                response: ApiSuccessResponse<PagedUserDocuments>,
+            ) => response.data,
+            providesTags: (result) =>
+                result
+                    ? [
+                          ...result.items.map(({ id }) => ({
+                              type: 'UserDocumentTrash' as const,
+                              id,
+                          })),
+                          { type: 'UserDocumentTrash', id: 'LIST' },
+                      ]
+                    : [{ type: 'UserDocumentTrash', id: 'LIST' }],
+        }),
         // [GET] /api/user-documents/:documentId
         // Đọc metadata tài liệu để hiển thị tiêu đề và nhận biết callback đã lưu revision mới.
         // Khi người dùng rời editor sau chỉnh sửa, page bật polling ngắn để chờ ONLYOFFICE callback.
@@ -183,6 +207,35 @@ export const documentTemplateApi = apiClient.injectEndpoints({
                 { type: 'UserDocuments', id: 'LIST' },
             ],
         }),
+        // [DELETE] /api/user-documents/:documentId
+        // Đưa tài liệu vào thùng rác; backend giữ file vật lý và metadata để hỗ trợ khôi phục.
+        deleteUserDocument: build.mutation<void, string>({
+            query: (documentId) => ({
+                url: `user-documents/${encodeURIComponent(documentId)}`,
+                method: 'DELETE',
+            }),
+            // Làm mới danh sách/phân trang và metadata tài liệu sau khi endpoint trả 204.
+            invalidatesTags: (_result, _error, documentId) => [
+                { type: 'UserDocuments', id: documentId },
+                { type: 'UserDocuments', id: 'LIST' },
+                { type: 'UserDocumentTrash', id: documentId },
+                { type: 'UserDocumentTrash', id: 'LIST' },
+            ],
+        }),
+        // [PATCH] /api/user-documents/:documentId/restore
+        // Bỏ deleted_at ở tài liệu trong thùng rác và làm mới cả hai danh sách liên quan.
+        restoreUserDocument: build.mutation<void, string>({
+            query: (documentId) => ({
+                url: `user-documents/${encodeURIComponent(documentId)}/restore`,
+                method: 'PATCH',
+            }),
+            invalidatesTags: (_result, _error, documentId) => [
+                { type: 'UserDocuments', id: documentId },
+                { type: 'UserDocuments', id: 'LIST' },
+                { type: 'UserDocumentTrash', id: documentId },
+                { type: 'UserDocumentTrash', id: 'LIST' },
+            ],
+        }),
     }),
 });
 
@@ -190,11 +243,14 @@ export const documentTemplateApi = apiClient.injectEndpoints({
 // Page và component dùng các hook này để đọc dữ liệu, theo dõi trạng thái hoặc gọi mutation.
 export const {
     useCreateUserDocumentMutation,
+    useDeleteUserDocumentMutation,
     useGetDocumentTemplateQuery,
     useGetUserDocumentEditorConfigQuery,
     useGetUserDocumentQuery,
     useListUserDocumentsQuery,
+    useListTrashedUserDocumentsQuery,
     useListDocumentTemplateCategoriesQuery,
     useListDocumentTemplatesQuery,
+    useRestoreUserDocumentMutation,
     useSaveUserDocumentMutation,
 } = documentTemplateApi;

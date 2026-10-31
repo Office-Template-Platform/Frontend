@@ -2,12 +2,15 @@
 export {
     documentTemplateApi,
     useCreateUserDocumentMutation,
+    useDeleteUserDocumentMutation,
     useGetDocumentTemplateQuery,
     useGetUserDocumentEditorConfigQuery,
     useGetUserDocumentQuery,
     useListUserDocumentsQuery,
+    useListTrashedUserDocumentsQuery,
     useListDocumentTemplateCategoriesQuery,
     useListDocumentTemplatesQuery,
+    useRestoreUserDocumentMutation,
     useSaveUserDocumentMutation,
 } from './api/document-template.api';
 export type {

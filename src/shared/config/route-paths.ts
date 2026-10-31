@@ -2,6 +2,7 @@
 export const ROUTE_PATHS = {
     home: '/',
     userDocuments: '/my-documents',
+    userDocumentTrash: '/my-documents/trash',
     documentTemplateCatalog: '/document-templates',
     documentEditor: '/documents/:documentId/editor',
     presentationTemplateCatalog: '/presentation-templates',

@@ -5,9 +5,11 @@ import {
     Download,
     LoaderCircle,
     PencilLine,
+    Trash2,
 } from 'lucide-react';
 import { generatePath, Link } from 'react-router-dom';
 import wordIcon from '@/assets/icons/microsoft-365/word.svg';
+import powerpointIcon from '@/assets/icons/microsoft-365/powerpoint.svg';
 import { Button } from '@/components/ui/button';
 import { getApiResourceUrl } from '@/shared/api/api-client';
 import { ROUTE_PATHS } from '@/shared/config/route-paths';
@@ -63,13 +65,42 @@ function UserDocumentStatusBadge({ status }: UserDocumentStatusBadgeProps) {
 }
 
 // Hiển thị một tài liệu cùng nguồn mẫu, lần cập nhật và hành động khả dụng theo trạng thái.
-function UserDocumentRow({ document, featured = false }: UserDocumentRowProps) {
+function UserDocumentRow({
+    document,
+    featured = false,
+    isDeleting,
+    onDelete,
+}: UserDocumentRowProps) {
+    const isPresentation = document.fileType === 'pptx';
     const downloadUrl = document.downloadUrl
         ? getApiResourceUrl(document.downloadUrl)
         : null;
     const editorUrl = generatePath(ROUTE_PATHS.documentEditor, {
         documentId: document.id,
     });
+    const deleteButton = (
+        <Button
+            type="button"
+            size="icon"
+            variant="outline"
+            disabled={isDeleting}
+            onClick={() => onDelete(document)}
+            title={`Xóa ${document.title}`}
+            aria-label={`Xóa ${document.title}`}
+            className={
+                featured
+                    ? 'size-9 shrink-0 rounded-[12px] border-rose-100 bg-white/80 text-rose-600 hover:border-rose-200 hover:bg-rose-50 hover:text-rose-700 lg:h-10 lg:w-full lg:justify-center lg:gap-2 lg:px-4'
+                    : 'size-9 shrink-0 rounded-[12px] border-rose-100 bg-white/80 text-rose-600 hover:border-rose-200 hover:bg-rose-50 hover:text-rose-700'
+            }
+        >
+            <Trash2 aria-hidden="true" />
+            {featured && (
+                <span className="hidden text-sm font-medium lg:inline">
+                    Xóa tài liệu
+                </span>
+            )}
+        </Button>
+    );
 
     return (
         <article
@@ -95,7 +126,7 @@ function UserDocumentRow({ document, featured = false }: UserDocumentRowProps) {
                     aria-hidden="true"
                 >
                     <img
-                        src={wordIcon}
+                        src={isPresentation ? powerpointIcon : wordIcon}
                         alt=""
                         width={featured ? 32 : 28}
                         height={featured ? 32 : 28}
@@ -195,22 +226,30 @@ function UserDocumentRow({ document, featured = false }: UserDocumentRowProps) {
                                     aria-label={`Tải ${document.title} xuống`}
                                 >
                                     <Download aria-hidden="true" />
-                                    Tải DOCX
+                                    Tải {isPresentation ? 'PPTX' : 'DOCX'}
                                 </a>
                             </Button>
                         )}
+                        {deleteButton}
                     </div>
                 ) : (
-                    <p
-                        className={`text-xs leading-5 ${document.status === 'failed' ? 'text-amber-800' : 'text-(--muted-ink)'}`}
-                        role={
-                            document.status === 'failed' ? 'status' : undefined
-                        }
+                    <div
+                        className={`flex min-w-0 items-center gap-2 ${featured ? 'lg:flex-col' : ''}`}
                     >
-                        {document.status === 'failed'
-                            ? 'File DOCX chưa được tạo thành công.'
-                            : 'Các thao tác sẽ khả dụng khi DOCX sẵn sàng.'}
-                    </p>
+                        <p
+                            className={`min-w-0 flex-1 text-xs leading-5 ${document.status === 'failed' ? 'text-amber-800' : 'text-(--muted-ink)'}`}
+                            role={
+                                document.status === 'failed'
+                                    ? 'status'
+                                    : undefined
+                            }
+                        >
+                            {document.status === 'failed'
+                                ? 'Bản sao chưa được tạo thành công.'
+                                : 'Các thao tác sẽ khả dụng khi file sẵn sàng.'}
+                        </p>
+                        {deleteButton}
+                    </div>
                 )}
             </div>
         </article>
@@ -221,11 +260,18 @@ function UserDocumentRow({ document, featured = false }: UserDocumentRowProps) {
 export function UserDocumentsCollection({
     recentDocument,
     documents,
+    isDeleting,
+    onDelete,
 }: UserDocumentsCollectionProps) {
     return (
         <div className="space-y-5">
             {recentDocument && (
-                <UserDocumentRow document={recentDocument} featured />
+                <UserDocumentRow
+                    document={recentDocument}
+                    featured
+                    isDeleting={isDeleting}
+                    onDelete={onDelete}
+                />
             )}
 
             {documents.length > 0 && (
@@ -247,7 +293,11 @@ export function UserDocumentsCollection({
                     <ul className="divide-y divide-blue-100/65">
                         {documents.map((document) => (
                             <li key={document.id}>
-                                <UserDocumentRow document={document} />
+                                <UserDocumentRow
+                                    document={document}
+                                    isDeleting={isDeleting}
+                                    onDelete={onDelete}
+                                />
                             </li>
                         ))}
                     </ul>

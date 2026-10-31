@@ -15,6 +15,15 @@ export const documentTemplateRoutes: RouteObject[] = [
         },
     },
     {
+        path: ROUTE_PATHS.userDocumentTrash,
+        lazy: async () => {
+            const { TrashDocumentsPage } =
+                await import('@/pages/document-template-library/trash/trash-documents-page');
+
+            return { Component: TrashDocumentsPage };
+        },
+    },
+    {
         path: ROUTE_PATHS.documentTemplateCatalog,
         lazy: async () => {
             const { DocumentLibraryPage } =

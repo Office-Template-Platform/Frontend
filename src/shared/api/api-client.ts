@@ -13,6 +13,7 @@ export const apiClient = createApi({
         'DocumentTemplates',
         'DocumentTemplateCategories',
         'UserDocuments',
+        'UserDocumentTrash',
         'PresentationTemplates',
     ],
     endpoints: () => ({}),

@@ -1,5 +1,5 @@
 // Sidebar sở hữu điều hướng và nhãn định dạng; route active do React Router cung cấp.
-import { FolderOpen, Layers, LayoutDashboard } from 'lucide-react';
+import { FolderOpen, Layers, LayoutDashboard, Trash2 } from 'lucide-react';
 import { Link, NavLink } from 'react-router-dom';
 import powerpointIcon from '@/assets/icons/microsoft-365/powerpoint.svg';
 import wordIcon from '@/assets/icons/microsoft-365/word.svg';
@@ -21,7 +21,7 @@ const sidebarLinkClassName = [
     'max-[820px]:min-h-15 max-[820px]:flex-col max-[820px]:justify-center max-[820px]:gap-1 max-[820px]:rounded-[16px] max-[820px]:px-1 max-[820px]:py-1.5 max-[820px]:text-[10px] max-[820px]:leading-[1.2]',
 ].join(' ');
 
-// Dẫn tới tài liệu đã tạo và các thư viện mẫu; cuối sidebar tóm tắt định dạng có sẵn.
+// Dẫn tới các thư viện; giữ Thùng rác ở đáy điều hướng và tóm tắt định dạng cuối sidebar.
 export function ProductNavigation() {
     return (
         <aside className={productSidebarClassName}>
@@ -51,7 +51,7 @@ export function ProductNavigation() {
                 Thư viện
             </span>
             <nav
-                className="grid gap-1.25 max-[820px]:w-full max-[820px]:grid-cols-4"
+                className="flex flex-1 flex-col gap-1.25 max-[820px]:grid max-[820px]:w-full max-[820px]:grid-cols-5 max-[820px]:flex-none"
                 aria-label="Điều hướng thư viện và tài liệu cá nhân"
             >
                 <NavLink
@@ -70,6 +70,7 @@ export function ProductNavigation() {
                 <NavLink
                     className={sidebarLinkClassName}
                     to={ROUTE_PATHS.userDocuments}
+                    end
                 >
                     <span
                         className="sidebar-link-icon grid size-5.75 shrink-0 place-items-center text-[#7890b2]"
@@ -114,6 +115,18 @@ export function ProductNavigation() {
                         />
                     </span>
                     <span>Mẫu trình chiếu</span>
+                </NavLink>
+                <NavLink
+                    className={`${sidebarLinkClassName} sidebar-link-trash`}
+                    to={ROUTE_PATHS.userDocumentTrash}
+                >
+                    <span
+                        className="sidebar-link-icon grid size-5.75 shrink-0 place-items-center"
+                        aria-hidden="true"
+                    >
+                        <Trash2 size={19} strokeWidth={1.8} />
+                    </span>
+                    <span>Thùng rác</span>
                 </NavLink>
             </nav>
 

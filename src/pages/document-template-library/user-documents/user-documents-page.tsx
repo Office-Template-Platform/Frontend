@@ -1,5 +1,11 @@
 // Trang điều phối danh sách DOCX riêng; truy vấn, lọc và từng trạng thái nằm ở feature con.
-import { useListUserDocumentsQuery } from '@/services/document-template';
+import { useState } from 'react';
+import { toast } from 'sonner';
+import { DeleteUserDocumentDialog } from '@/pages/document-template-library/user-documents/components/delete-user-document-dialog';
+import {
+    useDeleteUserDocumentMutation,
+    useListUserDocumentsQuery,
+} from '@/services/document-template';
 import { UserDocumentsCollection } from '@/pages/document-template-library/user-documents/components/user-documents-collection';
 import { UserDocumentsHeader } from '@/pages/document-template-library/user-documents/components/user-documents-header';
 import { UserDocumentsPagination } from '@/pages/document-template-library/user-documents/components/user-documents-pagination';
@@ -15,6 +21,10 @@ import { getApiErrorMessage } from '@/shared/api/get-api-error-message';
 // Tải tài liệu theo workspace hiện tại và buộc làm mới khi người dùng quay lại từ editor.
 export function UserDocumentsPage() {
     const filters = useUserDocumentsFilters();
+    const [documentToDelete, setDocumentToDelete] =
+        useState<UserDocumentSummary | null>(null);
+    const [deleteUserDocument, { isLoading: isDeleting }] =
+        useDeleteUserDocumentMutation();
     const { currentData, error, isError, isFetching, refetch } =
         useListUserDocumentsQuery(filters.query, {
             refetchOnMountOrArgChange: true,
@@ -24,6 +34,35 @@ export function UserDocumentsPage() {
     // Giữ trang lỗi riêng để retry không làm mất truy vấn đang hiển thị.
     function handleRetry(): void {
         void refetch();
+    }
+
+    // Gửi xóa sau xác nhận; nếu xóa mục cuối trang thì chuyển sang trang trước.
+    async function handleConfirmDelete(): Promise<void> {
+        if (!documentToDelete) return;
+
+        try {
+            await deleteUserDocument(documentToDelete.id).unwrap();
+            toast.success(
+                `Đã chuyển “${documentToDelete.title}” vào thùng rác.`,
+            );
+            setDocumentToDelete(null);
+
+            if (documents.length === 1 && currentData && currentData.page > 1) {
+                filters.handlePageChange(currentData.page - 1);
+            }
+        } catch (deleteError) {
+            toast.error(
+                getApiErrorMessage(
+                    deleteError,
+                    'Không thể chuyển tài liệu này vào thùng rác. Vui lòng thử lại.',
+                ),
+            );
+        }
+    }
+
+    // Đóng hộp xác nhận riêng để giữ trạng thái xóa và điều hướng trong page.
+    function handleCancelDelete(): void {
+        if (!isDeleting) setDocumentToDelete(null);
     }
 
     const recentDocument: UserDocumentSummary | null =
@@ -64,6 +103,8 @@ export function UserDocumentsPage() {
                         <UserDocumentsCollection
                             recentDocument={recentDocument}
                             documents={otherDocuments}
+                            isDeleting={isDeleting}
+                            onDelete={setDocumentToDelete}
                         />
                         {currentData && currentData.totalPages > 1 && (
                             <UserDocumentsPagination
@@ -76,6 +117,12 @@ export function UserDocumentsPage() {
                     </div>
                 </>
             )}
+            <DeleteUserDocumentDialog
+                document={documentToDelete}
+                isDeleting={isDeleting}
+                onCancel={handleCancelDelete}
+                onConfirm={handleConfirmDelete}
+            />
         </main>
     );
 }

@@ -13,6 +13,31 @@
 .sidebar-link[aria-current='page'] .sidebar-link-icon {
     color: var(--blue);
 }
+.sidebar-link-trash {
+    color: #ad515b;
+}
+.sidebar-link-trash .sidebar-link-icon {
+    color: #c65c66;
+}
+.sidebar-link-trash:hover {
+    color: #a83243;
+    background: rgb(255 239 240 / 76%);
+}
+.sidebar-link-trash[aria-current='page'] {
+    border-color: rgb(255 255 255 / 90%);
+    color: #a83243;
+    background: linear-gradient(
+        110deg,
+        rgb(255 230 232 / 95%),
+        rgb(255 245 245 / 88%)
+    );
+    box-shadow:
+        0 7px 18px rgb(190 55 73 / 10%),
+        inset 0 1px 0 rgb(255 255 255 / 92%);
+}
+.sidebar-link-trash[aria-current='page'] .sidebar-link-icon {
+    color: #dc3545;
+}
 .sidebar-note-surface {
     border: 1px solid rgb(255 255 255 / 82%);
     background: linear-gradient(
